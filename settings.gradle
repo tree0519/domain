@@ -1,0 +1,8 @@
+rootProject.name = 'domain'
+include 'domain-app'
+include 'domain-111'
+include 'domain-common'
+include 'domain-base'
+include 'domain-gateway'
+include 'domain-oaushserver'
+

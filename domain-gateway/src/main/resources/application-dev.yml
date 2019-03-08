@@ -1,0 +1,109 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: domain-gateway
+  redis:
+    database: 7
+    host: 54.169.160.139
+    port: 6379
+    password:
+  cache:
+    type: redis
+eureka:
+  client:
+    service-url:
+      defaultZone: http://54.169.160.139:3000/eureka
+  instance:
+    prefer-ip-address: true
+
+zuul:
+  host:
+    socket-timeout-millis: 20000
+    connect-timeout-millis: 20000
+  forceOriginalQueryStringEncoding: true
+  sensitive-headers:
+  routes:
+    domain-app:
+      path: /app/**
+      serviceId: domain-app
+      ribbon:
+        eager-load:
+          enabled: true
+        MaxAutoRetries: 2
+        MaxAutoRetriesNextServer: 2
+        OkToRetryOnAllOperations: true
+        ConnectTimeout: 20000
+        ReadTimeout: 20000
+    domain-oauthserver:
+      path: /auth/**
+      serviceId: domain-oauthserver
+      ribbon:
+        eager-load:
+          enabled: true
+        MaxAutoRetries: 2
+        MaxAutoRetriesNextServer: 2
+        OkToRetryOnAllOperations: true
+        ConnectTimeout: 20000
+        ReadTimeout: 20000
+    domain-111:
+        path: /111/**
+        serviceId: domain-111
+        ribbon:
+          eager-load:
+            enabled: true
+          MaxAutoRetries: 2
+          MaxAutoRetriesNextServer: 2
+          OkToRetryOnAllOperations: true
+          ConnectTimeout: 20000
+          ReadTimeout: 20000
+#    domain-fileserver:
+#      path: /fileserver/**
+#      serviceId: m-file-service
+#      ribbon:
+#        eager-load:
+#          enabled: true
+#        MaxAutoRetries: 2
+#        MaxAutoRetriesNextServer: 2
+#        OkToRetryOnAllOperations: true
+#        ConnectTimeout: 20000
+#        ReadTimeout: 20000
+  add-proxy-headers: true
+  ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin,WWW-Authenticate,www-authenticate
+
+hystrix:
+  propagate:
+    request-attribute:
+      enabled: true
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 20000
+ribbon:
+  eager-load:
+    enabled: true
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 2
+  OkToRetryOnAllOperations: false
+  ConnectTimeout: 60000
+  ReadTimeout: 60000
+
+security:
+  basic:
+    enabled: false
+  oauth2:
+    client:
+      access-token-uri: http://localhost:9090/auth/oauth/token
+      user-authorization-uri: http://localhost:9090/auth/oauth/authorize
+    resource:
+      token-info-uri: http://localhost:9090/auth/user
+
+proxy:
+  auth:
+    routes:
+      auth-server: oauth2

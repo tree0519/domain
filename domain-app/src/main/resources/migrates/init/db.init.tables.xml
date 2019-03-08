@@ -1,0 +1,821 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="init-data-table" author="liqi">
+        <sql>
+            <![CDATA[
+
+                DROP TABLE IF EXISTS `sys_res`;
+
+                CREATE TABLE `sys_res` (
+                  `id` bigint(20) unsigned NOT NULL,
+                  `pid` bigint(20) unsigned NOT NULL DEFAULT '0',
+                  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '在vue中name表示路由名称，非vue是资源名称',
+                  `source` int(2) DEFAULT '1' COMMENT '菜单所属端（1:运营端，2:企业端，3:APP端）',
+                  `permission` varchar(100) NOT NULL DEFAULT '',
+                  `url` varchar(200) NOT NULL DEFAULT '' COMMENT 'vue中表示路由的path',
+                  `sort_num` int(10) unsigned NOT NULL DEFAULT '1' COMMENT '排序',
+                  `attach` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'attach(隶属字段)1:pc端，2:app端',
+                  `icon1` varchar(200) NOT NULL DEFAULT '' COMMENT 'PC菜单图片',
+                  `icon2` varchar(200) NOT NULL DEFAULT '' COMMENT 'APP菜单图片',
+                  `pids` varchar(500) NOT NULL DEFAULT '' COMMENT 'TreeTable排序',
+                  `type` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '1 菜单 2 按钮',
+                  `des` varchar(255) NOT NULL DEFAULT '',
+                  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1 可用 0 不可用 -1: 删除',
+                  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='资源表';
+
+                DROP TABLE IF EXISTS `sys_role`;
+
+                CREATE TABLE `sys_role` (
+                  `id` bigint(20) unsigned NOT NULL,
+                  `name` varchar(55) NOT NULL DEFAULT '',
+                  `code` varchar(100) NOT NULL DEFAULT '',
+                  `sort_num` int(10) unsigned NOT NULL DEFAULT '1',
+                  `des` varchar(100) NOT NULL DEFAULT '',
+                  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1 可用 0 不可用 -1: 删除',
+                  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色表';
+
+                DROP TABLE IF EXISTS `sys_role_res`;
+
+                CREATE TABLE `sys_role_res` (
+                  `id` bigint(20) unsigned NOT NULL,
+                  `res_id` bigint(20) unsigned NOT NULL,
+                  `role_id` bigint(20) unsigned NOT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色资源表';
+
+
+                DROP TABLE IF EXISTS `sys_user`;
+
+                CREATE TABLE `sys_user` (
+                  `id` bigint(20) unsigned NOT NULL,
+                  `per_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '人员id',
+                  `login_name` varchar(100) NOT NULL DEFAULT '',
+                  `pwd` char(60) NOT NULL DEFAULT '',
+                  `salt` char(60) NOT NULL DEFAULT '',
+                  `name` varchar(50) NOT NULL DEFAULT '',
+                  `email` varchar(100) NOT NULL DEFAULT '',
+                  `sex` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '1:男，0:女',
+                  `telephone` varchar(20) NOT NULL DEFAULT '' COMMENT '电话',
+                  `avatar` varchar(200) NOT NULL DEFAULT '' COMMENT '头像',
+                  `isdisabled` int(1) DEFAULT '1' COMMENT '禁用标识（1:启用，2:禁用）',
+                  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1 可用 0 不可用 -1: 删除',
+                  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
+
+
+                DROP TABLE IF EXISTS `sys_user_role`;
+
+                CREATE TABLE `sys_user_role` (
+                  `id` bigint(20) unsigned NOT NULL,
+                  `user_id` bigint(20) unsigned NOT NULL,
+                  `role_id` bigint(20) unsigned NOT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户角色表';
+
+                DROP TABLE IF EXISTS `sys_file`;
+
+                CREATE TABLE `sys_file` (
+                  `id`          bigint UNSIGNED  NOT NULL                COMMENT '文件信息表主键',
+                  `name`        char(100)        NOT NULL DEFAULT ''     COMMENT '文件名称',
+                  `orig_name`   varchar(100)     NOT NULL DEFAULT ''     COMMENT '源文件名称',
+                  `ext`         char(8)          NOT NULL DEFAULT ''     COMMENT '后缀名',
+                  `size`        int(11) UNSIGNED NOT NULL DEFAULT 0      COMMENT '文件大小',
+                  `path`        varchar(512)     NOT NULL DEFAULT ''     COMMENT '文件路径',
+                  `des`         varchar(512)     NOT NULL DEFAULT ''     COMMENT '备注',
+                  `status`      tinyint          NOT NULL    DEFAULT 1   COMMENT '1:正常，0：非正常',
+                  `create_time` datetime         NOT NULL    DEFAULT CURRENT_TIMESTAMP,
+                  `update_time` datetime         NOT NULL    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文件信息表';
+
+                DROP TABLE IF EXISTS `sys_dict_type`;
+
+                CREATE TABLE `sys_dict_type` (
+                  `id` bigint(20) unsigned NOT NULL,
+                  `name` varchar(20) NOT NULL DEFAULT '' COMMENT '字典类型名称',
+                  `code` varchar(32) NOT NULL DEFAULT '' COMMENT '字典类型编码',
+                  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1 可用 0 不可用 -1: 删除',
+                  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='字典类型表';
+
+                DROP TABLE IF EXISTS `sys_dict`;
+
+                CREATE TABLE `sys_dict` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '字典信息表主键',
+                  `type_id` varchar(32) DEFAULT NULL COMMENT '字典类型',
+                  `status` int(2) DEFAULT '1' COMMENT '状态（2：禁用，1：启用）',
+                  `code` varchar(32) DEFAULT NULL COMMENT '编码',
+                  `name` varchar(64) DEFAULT NULL COMMENT '字典名称',
+                  `description` varchar(512) DEFAULT NULL COMMENT '简介',
+                  `isdel` int(4) DEFAULT NULL COMMENT '状态（1：未删除，2：已删除）',
+                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                  `create_user` varchar(32) DEFAULT NULL COMMENT '创建用户ID',
+                  `create_ip` varchar(64) DEFAULT NULL COMMENT '创建用户IP',
+                  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+                  `update_user` varchar(32) DEFAULT NULL,
+                  `update_ip` varchar(64) DEFAULT NULL COMMENT '修改用户IP',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='字典信息表';
+
+                DROP TABLE IF EXISTS `dept`;
+
+                CREATE TABLE `dept` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '部门信息表主键',
+                  `code` varchar(32) DEFAULT NULL COMMENT '部门编码',
+                  `type` int(2) DEFAULT NULL COMMENT '类型(1:公司，2部门)',
+                  `parent_id` bigint(20) DEFAULT NULL COMMENT '上一级节点ID',
+                  `name` varchar(128) DEFAULT NULL COMMENT '部门名称',
+                  `status` int(2) DEFAULT '0' COMMENT '部门状态',
+                  `sort` int(4) DEFAULT NULL COMMENT '部门排序',
+                  `isdel` int(2) DEFAULT '1' COMMENT '删除标识（1:未删除，2:已删除）',
+                  `remark` varchar(512) DEFAULT NULL COMMENT '备注',
+                  `create_time` datetime DEFAULT NULL COMMENT '部门创建时间',
+                  `create_user` varchar(32) DEFAULT NULL COMMENT '部门创建用户ID',
+                  `create_ip` varchar(64) DEFAULT NULL COMMENT '部门创建用户IP',
+                  `update_time` datetime DEFAULT NULL COMMENT '部门修改时间',
+                  `update_user` varchar(32) DEFAULT NULL COMMENT '部门修改用户ID',
+                  `update_ip` varchar(64) DEFAULT NULL COMMENT '部门修改用户IP',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='部门信息表';
+
+                DROP TABLE IF EXISTS `per`;
+
+                CREATE TABLE `per` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '人员信息表主键',
+                  `code` varchar(32) DEFAULT NULL COMMENT '人员编码',
+                  `dept_ids` varchar(500) DEFAULT NULL COMMENT '所属部门集合',
+                  `dept_pid` bigint(20) DEFAULT '0' COMMENT '所属公司',
+                  `dept_id` bigint(20) DEFAULT '0' COMMENT '所属部门',
+                  `name` varchar(32) DEFAULT NULL COMMENT '人员姓名',
+                  `nick_name` varchar(32) DEFAULT NULL COMMENT '人员昵称',
+                  `id_card` varchar(64) DEFAULT NULL COMMENT '人员身份证号码',
+                  `tel` varchar(32) DEFAULT NULL COMMENT '电话号码',
+                  `phone` varchar(32) DEFAULT NULL COMMENT '手机号码',
+                  `gender` int(2) DEFAULT NULL COMMENT '人员性别',
+                  `email` varchar(64) DEFAULT NULL COMMENT '邮箱',
+                  `post_id` varchar(32) DEFAULT NULL COMMENT '职务',
+                  `entry_time` datetime DEFAULT NULL COMMENT '入职时间',
+                  `quit_time` datetime DEFAULT NULL COMMENT '离职时间',
+                  `isdel` int(2) DEFAULT '1' COMMENT '删除标识（1:未删除，2:已删除）',
+                  `remark` varchar(512) DEFAULT NULL COMMENT '备注',
+                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                  `create_user` varchar(32) DEFAULT NULL COMMENT '创建用户ID',
+                  `create_ip` varchar(64) DEFAULT NULL COMMENT '创建用户IP',
+                  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+                  `update_user` varchar(32) DEFAULT NULL COMMENT '修改用户ID',
+                  `update_ip` varchar(64) DEFAULT NULL COMMENT '修改用户IP',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='人员信息表';
+
+                DROP TABLE IF EXISTS `risk_type`;
+
+                CREATE TABLE `risk_type` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '风险类型表主键',
+                  `code` varchar(32) DEFAULT NULL COMMENT '风险类型编码',
+                  `parent_id` bigint(20) DEFAULT NULL COMMENT '上一级节点ID',
+                  `name` varchar(32) DEFAULT NULL COMMENT '风险类型名称',
+                  `isdel` int(2) DEFAULT '1' COMMENT '删除标识（1:未删除，2:已删除）',
+                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                  `create_user` varchar(32) DEFAULT NULL COMMENT '创建用户ID',
+                  `create_ip` varchar(64) DEFAULT NULL COMMENT '创建用户IP',
+                  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+                  `update_user` varchar(32) DEFAULT NULL COMMENT '修改用户ID',
+                  `update_ip` varchar(64) DEFAULT NULL COMMENT '修改用户IP',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='风险类型表';
+
+
+                DROP TABLE IF EXISTS `risk_msg`;
+
+                CREATE TABLE `risk_msg` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '风险条目表主键',
+                  `type_ids` varchar(500) DEFAULT NULL COMMENT '风险类型集合',
+                  `type_id` bigint(20) DEFAULT NULL COMMENT '风险类型ID',
+                  `name` varchar(255) DEFAULT NULL COMMENT '条目名称',
+                  `grade` varchar(32) DEFAULT NULL COMMENT '风险等级字典',
+                  `standard` varchar(2000) DEFAULT NULL COMMENT '检查标准',
+                  `isdel` int(2) DEFAULT '1' COMMENT '删除标识（1:未删除，2:已删除）',
+                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                  `create_user` varchar(32) DEFAULT NULL COMMENT '创建用户ID',
+                  `create_ip` varchar(64) DEFAULT NULL COMMENT '创建用户IP',
+                  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+                  `update_user` varchar(32) DEFAULT NULL COMMENT '修改用户ID',
+                  `update_ip` varchar(64) DEFAULT NULL COMMENT '修改用户IP',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='风险条目表';
+
+                DROP TABLE IF EXISTS `region`;
+
+                CREATE TABLE `region` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '行政区域表主键',
+                  `pids` bigint(20) DEFAULT NULL COMMENT '父级节点集合',
+                  `parent_id` bigint(20) DEFAULT NULL COMMENT '上一级节点ID',
+                  `name` varchar(32) DEFAULT NULL COMMENT '行政区域名称',
+                  `ename` varchar(32) DEFAULT NULL COMMENT '首字母',
+                  `isdel` int(2) DEFAULT '1' COMMENT '删除标识（1:未删除，2:已删除）',
+                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                  `create_user` varchar(32) DEFAULT NULL COMMENT '创建用户ID',
+                  `create_ip` varchar(64) DEFAULT NULL COMMENT '创建用户IP',
+                  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+                  `update_user` varchar(32) DEFAULT NULL COMMENT '修改用户ID',
+                  `update_ip` varchar(64) DEFAULT NULL COMMENT '修改用户IP',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='行政区域表';
+
+                DROP TABLE IF EXISTS `app`;
+
+                CREATE TABLE `app` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '应用信息表主键',
+                  `code` varchar(32) DEFAULT NULL COMMENT '编码',
+                  `name` varchar(64) DEFAULT NULL COMMENT '应用名称',
+                  `app_type` int(2) DEFAULT '0' COMMENT '应用类型（1:基础应用，2:业务应用）',
+                  `icon` varchar(32) DEFAULT NULL COMMENT '图标文件ID',
+                  `sort` int(4) DEFAULT NULL COMMENT '排序',
+                  `status` int(2) DEFAULT '1' COMMENT '状态（1.启用，2.禁用）',
+                  `isdel` int(2) DEFAULT '1' COMMENT '删除标识（1:未删除，2:已删除）',
+                  `introduction` varchar(512) DEFAULT NULL COMMENT '介绍',
+                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                  `create_user` varchar(32) DEFAULT NULL,
+                  `create_ip` varchar(64) DEFAULT NULL COMMENT '创建用户IP',
+                  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+                  `update_user` varchar(32) DEFAULT NULL COMMENT '修改用户ID',
+                  `update_ip` varchar(64) DEFAULT NULL COMMENT '修改用户IP',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='应用信息表';
+
+                DROP TABLE IF EXISTS `res_app`;
+
+                CREATE TABLE `res_app` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '应用资源关系表主键',
+                  `app_id` bigint(20) DEFAULT NULL COMMENT '应用ID',
+                  `menu_id` bigint(20) DEFAULT NULL COMMENT '资源ID',
+                  `isdel` int(2) DEFAULT '1' COMMENT '删除标识（1:未删除，2:已删除）',
+                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                  `create_user` varchar(32) DEFAULT NULL COMMENT '创建用户ID',
+                  `create_ip` varchar(64) DEFAULT NULL COMMENT '创建用户IP',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='应用资源关系信息表';
+
+                DROP TABLE IF EXISTS `client`;
+
+                CREATE TABLE `client` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '客户主键',
+                  `code` varchar(32) DEFAULT NULL COMMENT '客户编码',
+                  `name` varchar(128) DEFAULT NULL COMMENT '客户名称',
+                  `short_name` varchar(64) DEFAULT NULL COMMENT '客户简称',
+                  `admin_name` varchar(32) DEFAULT NULL COMMENT '客户联系人',
+                  `admin_user` varchar(32) DEFAULT NULL COMMENT '客户管理员登录账号名',
+                  `admin_pwd` varchar(64) DEFAULT NULL COMMENT '客户管理员登录密码',
+                  `tel` varchar(32) DEFAULT NULL COMMENT '客户电话',
+                  `phone` varchar(32) DEFAULT NULL COMMENT '客户手机号',
+                  `domain` varchar(128) DEFAULT NULL COMMENT '客户域名',
+                  `system_name` varchar(64) DEFAULT NULL COMMENT '客户联系地址',
+                  `use_type` int(2) DEFAULT '0' COMMENT '客户使用类型（1:购买，2:试用）',
+                  `auth_time` date DEFAULT NULL COMMENT '客户授权时间',
+                  `auth_start` date DEFAULT NULL COMMENT '客户授权使用开始时间',
+                  `auth_end` date DEFAULT NULL COMMENT '客户授权使用结束时间',
+                  `project_num` int(4) DEFAULT NULL COMMENT '客户授权项目数',
+                  `user_num` int(4) DEFAULT NULL COMMENT '客户授权项目数',
+                  `logo` varchar(1500) DEFAULT NULL COMMENT '客户LOGO文件ID',
+                  `deploy_type` int(2) DEFAULT '0' COMMENT '客户系统部署方式(1:公有云部署，2:私有云部署)',
+                  `isdel` int(2) DEFAULT '1' COMMENT '删除标识（1:未删除，2:已删除）',
+                  `remark` varchar(512) DEFAULT NULL COMMENT '客户备注',
+                  `create_time` datetime DEFAULT NULL COMMENT '客户创建时间',
+                  `create_user` varchar(32) DEFAULT NULL COMMENT '客户创建人ID',
+                  `create_ip` varchar(64) DEFAULT NULL COMMENT '客户创建IP',
+                  `update_time` datetime DEFAULT NULL COMMENT '客户修改时间',
+                  `update_user` varchar(32) DEFAULT NULL COMMENT '客户修改人ID',
+                  `update_ip` varchar(64) DEFAULT NULL COMMENT '客户修改IP',
+                  `auditing_time` datetime DEFAULT NULL COMMENT '审核时间',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='客户信息表';
+
+                DROP TABLE IF EXISTS `client_app`;
+
+                CREATE TABLE `client_app` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '客户应用关系表主键',
+                  `client_id` bigint(20) DEFAULT NULL COMMENT '客户ID',
+                  `app_id` bigint(20) DEFAULT NULL COMMENT '应用ID',
+                  `type` int(2) DEFAULT NULL COMMENT '产品应用使用类型（1:试用，2:正式试用）',
+                  `status` int(2) DEFAULT '1' COMMENT '状态（1:启用，2:禁用）',
+                  `isdel` int(2) DEFAULT NULL COMMENT '删除标识（1:未删除，2:已删除）',
+                  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                  `create_user` varchar(32) DEFAULT NULL COMMENT '创建用户ID',
+                  `create_ip` varchar(64) DEFAULT NULL COMMENT '创建用户IP',
+                  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+                  `update_user` varchar(32) DEFAULT NULL COMMENT '修改用户ID',
+                  `update_ip` varchar(64) DEFAULT NULL COMMENT '修改用户IP',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='客户应用关系表';
+
+                DROP TABLE IF EXISTS `sys_log`;
+
+                CREATE TABLE `sys_log` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '日志信息表主键',
+                  `type` int(4) DEFAULT NULL COMMENT '日志类型（1:增，2:删，3:改，4:查）',
+                  `desc` varchar(512) DEFAULT NULL COMMENT '日志说明（日志数据）',
+                  `data_id` varchar(32) DEFAULT NULL COMMENT '操作数据ID',
+                  `browser` varchar(64) DEFAULT NULL COMMENT '浏览器名称',
+                  `isdel` int(2) DEFAULT '1' COMMENT '删除标识（1:未删除，2:已删除）',
+                  `remark` varchar(512) DEFAULT NULL COMMENT '操作详情',
+                  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+                  `create_user` varchar(32) DEFAULT NULL COMMENT '创建用户',
+                  `create_ip` varchar(64) DEFAULT NULL COMMENT '创建用户IP',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='日志信息表';
+
+
+
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="alert-sys_res-delete-column-source-and-edit-column-attach" author="">
+        <sql>
+            <![CDATA[
+                alter table sys_res drop column source;
+
+                alter table sys_res modify column attach tinyint(1) NOT NULL DEFAULT '1' COMMENT 'attach(隶属字段)1:运营端，2:企业端，2:app端';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-risk_type-add-column-business_type-and-sort" author="liqi">
+        <sql>
+            <![CDATA[
+                alter table risk_type add column business_type VARCHAR(50) DEFAULT NULL COMMENT '行业类型字典编码';
+                alter table risk_type add column sort int(10) DEFAULT '0' COMMENT '排序';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-table-user" author="lxh">
+        <comment>
+            添加用户基本表，用户客户关系状态表，用户登录最新日志表，从企业端同步过来的用户基本信息表
+        </comment>
+        <sql>
+            <![CDATA[
+
+            DROP TABLE IF EXISTS `user`;
+
+                  CREATE TABLE IF NOT EXISTS `user` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '主键id',
+                  `user_no` varchar(40) NOT NULL COMMENT '用户编码',
+                  `mobile_no` varchar(11) DEFAULT NULL COMMENT '手机号',
+                  `login_id` varchar(16) DEFAULT NULL COMMENT '登录用户名',
+                  `password` varchar(60) DEFAULT NULL COMMENT '登录密码',
+                  `name` varchar(50) DEFAULT NULL COMMENT '姓名',
+                  `gender` tinyint(2) DEFAULT '1' COMMENT '0 女,1 男',
+                  `idcard_no` varchar(30) DEFAULT NULL COMMENT '身份证号码',
+                  `region` varchar(100) DEFAULT NULL COMMENT '行政区域',
+                  `weixin_id` varchar(100) DEFAULT NULL COMMENT '微信号',
+                  `source` tinyint(2) DEFAULT '1' COMMENT '用户来源:1 民安保,2 其他',
+                  `reg_platform` tinyint(2) DEFAULT '1' COMMENT '注册平台: 1 云平台,2 app,3 公众号,4 门户网站',
+                  `reg_term_id` varchar(50) DEFAULT NULL COMMENT '注册终端编MAC',
+                  `phone_model` varchar(50) DEFAULT NULL COMMENT '手机型号',
+                  `reg_ip` varchar(50) DEFAULT NULL COMMENT '注册ip地址',
+                  `reg_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
+                  `isdel` tinyint(2) DEFAULT '1' COMMENT '是否删除 1 未删除 ，2 已删除',
+                  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户基本信息表';
+
+
+            DROP TABLE IF EXISTS `user_client`;
+
+                  CREATE TABLE IF NOT EXISTS `user_client` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '主键id',
+                  `user_id` bigint(20) unsigned NOT NULL COMMENT '用户id',
+                  `client_id` bigint(20) unsigned NOT NULL COMMENT '客户id',
+                  `sync_user_id` varchar(32) DEFAULT NULL COMMENT '企业端用户同步id',
+                  `user_type` tinyint(2) DEFAULT '1' COMMENT '用户类型:1 正式用户,2 公海用户,3 其他',
+                  `user_status` tinyint(4) DEFAULT '1' COMMENT '用户状态，0 禁用，1 启用,2 试用,3 待审核,4 申请',
+                  `isdel` tinyint(2) DEFAULT '1' COMMENT '是否删除 1 未删除 ，2 已删除',
+                  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户客户关系状态表';
+
+
+            DROP TABLE IF EXISTS `user_logging`;
+
+                  CREATE TABLE IF NOT EXISTS `user_logging` (
+                  `id` bigint(20) unsigned NOT NULL COMMENT '主键id',
+                  `user_id` bigint(20) unsigned NOT NULL COMMENT '用户id',
+                  `login_term_id` varchar(50) DEFAULT NULL COMMENT '最新登录终端编MAC',
+                  `login_phone_model` varchar(50) DEFAULT NULL COMMENT '最新登录手机型号',
+                  `login_ip` varchar(50) DEFAULT NULL COMMENT '最新登录ip地址',
+                  `isdel` tinyint(2) DEFAULT '1' COMMENT '是否删除 1 未删除 ，2 已删除',
+                  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最新登录时间',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='企业端用户最新登录日志表';
+
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="alert-dict-type_id_type" author="lxh">
+        <comment>
+            字典表 type_id类型更改
+        </comment>
+
+        <sql>
+            <![CDATA[
+                alter table sys_dict modify column  type_id bigint(20) DEFAULT NULL COMMENT '字典类型id';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-add-sys_user-post_id" author="lxh">
+        <comment>
+            系统用户添加职务字段
+        </comment>
+
+        <sql>
+            <![CDATA[
+                alter table sys_user add column  post_id bigint(20) DEFAULT NULL COMMENT '职务id';
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="alert-add-client-region_id" author="lxh">
+        <comment>
+            客户表添加区域字段
+        </comment>
+
+        <sql>
+            <![CDATA[
+                alter table client add column  region_id bigint(20) DEFAULT NULL COMMENT '叶子节点区域id';
+            ]]>
+        </sql>
+    </changeSet>
+
+
+
+    <changeSet id="alert-add-login-auth-tables" author="lxh">
+        <comment>
+            客户表添加区域字段
+        </comment>
+
+        <sql>
+            <![CDATA[
+            DROP TABLE IF EXISTS `login_auth`;
+               CREATE TABLE IF NOT EXISTS `login_auth` (
+              `id` bigint(20) NOT NULL,
+              `clientId` bigint(20) DEFAULT NULL COMMENT '客户id',
+              `code` varchar(64) DEFAULT NULL COMMENT 'code',
+              `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+              `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='客户授权登录端表';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="alert-update-user-region_id" author="lxh">-->
+        <!--<comment>-->
+            <!--用户表修改区域字段-->
+        <!--</comment>-->
+
+        <!--<sql>-->
+            <!--<![CDATA[-->
+                <!--alter table user modify column  region bigint(20) DEFAULT NULL COMMENT '用户叶子节点区域id';-->
+            <!--]]>-->
+        <!--</sql>-->
+    <!--</changeSet>-->
+
+    <changeSet id="alert-update-client-user_type " author="lxh">
+        <comment>
+            客户表修改使用类型字段
+        </comment>
+        <sql>
+            <![CDATA[
+                alter table client modify column use_type int(2) DEFAULT '2' COMMENT '客户使用类型（1:购买，2:试用）';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-update-auoth-client_id " author="lxh">
+        <comment>
+            登录权限表修改字段名
+        </comment>
+        <sql>
+            <![CDATA[
+                alter table login_auth CHANGE clientId client_id bigint(20) DEFAULT NULL COMMENT '客户id';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-add-sys_res-code " author="lxh">
+        <comment>
+            添加菜单表表字段code
+        </comment>
+        <sql>
+            <![CDATA[
+                alter table sys_res add column code varchar(64) DEFAULT NULL COMMENT '菜单code';
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="alert-update-sys_user-post-type" author="lxh">
+        <comment>
+            修改user 表post的类型
+        </comment>
+        <sql>
+            <![CDATA[
+                alter table sys_user  modify column post_id varchar(32) DEFAULT '' COMMENT '职务名称';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-update-client-auditing_time" author="lxh">
+        <comment>
+            修改client 表auditing_time的类型
+        </comment>
+        <sql>
+            <![CDATA[
+                alter table client  modify column auditing_time  date DEFAULT NULL COMMENT '审核时间';
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="alert-update-user-only-key--mobile_no" author="lxh">
+        <comment>
+            修改client 表唯一键
+        </comment>
+        <sql>
+            <![CDATA[
+             ALTER TABLE `user` ADD UNIQUE mobile_no_index ( `mobile_no` );
+             ALTER TABLE `user` ADD UNIQUE idcard_no_index ( `idcard_no` );
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-update-user_client-only-key--user_id" author="lxh">
+        <comment>
+            修改client_user 表唯一键
+        </comment>
+        <sql>
+            <![CDATA[
+             ALTER TABLE `user_client` ADD UNIQUE user_client_index ( `user_id` );
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-add-user-cloumn-avatar" author="lxh">
+        <comment>
+            修改client 表唯一键
+        </comment>
+        <sql>
+            <![CDATA[
+             alter table user add column avatar varchar(200) DEFAULT NULL COMMENT '头像';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-add-and-del-user-cloumn-user_type-user_type" author="lxh">
+        <comment>
+            user 添加字段
+        </comment>
+        <sql>
+            <![CDATA[
+            alter table user add column user_type  tinyint(2) DEFAULT '1' COMMENT '用户类型:1 正式用户,2 公海用户,3 其他';
+              alter table user add column user_status  tinyint(4) DEFAULT '1' COMMENT '用户状态，0 禁用，1 启用,2 试用,3 待审核,4 申请';
+              alter table user_client drop column user_type,drop column user_status;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-table-sys_msg-sys_msg_audience" author="ZYW">
+        <comment>
+            添加系统消息和系统消息受众关系表
+        </comment>
+        <sql>
+            <![CDATA[
+                DROP TABLE IF EXISTS `sys_msg`;
+                create table `sys_msg`(
+                `id`			bigint(20) unsigned NOT NULL,
+                `msg_title`   	varchar(500) not null default '' COMMENT '消息标题',
+                `msg_content`	longtext not null            	 COMMENT '消息内容',
+                `msg_range` 	int(2) not null 				 COMMENT '1:所有2：政府，3：单位，4：指定机构（顶级ID和子机构） 5：指定用户',
+                `msg_type`		int(1) not null default 1		 COMMENT '1:用户注册, 2:积分变动, 3:系统消息',
+                `status`		int(1) not null default 1		 COMMENT '0:删除,1:正常',
+                `create_time` 	datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                `update_time` 	datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+                PRIMARY KEY (`id`)
+                )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统消息';
+
+                DROP TABLE IF EXISTS `sys_msg_audience`;
+                create table `sys_msg_audience`(
+                `id`			bigint(20) unsigned NOT NULL,
+                `msg_id`		bigint(20) unsigned NOT NULL 	COMMENT '消息ID',
+                `audience_id`	varchar(50) NOT NULL			COMMENT '受众ID',
+                `read`			boolean		DEFAULT false		COMMENT '是否已读，true:已读,false：未读',
+                `status`		int(1) not null default 1		COMMENT '0:删除,1:正常',
+                `create_time` 	datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                `update_time` 	datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+                PRIMARY KEY (`id`),
+                UNIQUE KEY `IDX_msg_id_msg_id` (`msg_id`, `audience_id`)
+                )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息受众关系表';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-table-client_contract_file" author="ZYW">
+        <comment>
+            添加系统消息和系统消息受众关系表
+        </comment>
+        <sql>
+            <![CDATA[
+                DROP TABLE IF EXISTS `client_contract_file`;
+                CREATE TABLE `client_contract_file` (
+                  `id` 		      BIGINT(20) UNSIGNED NOT NULL,
+                  `contract_type` TINYINT(4) NOT NULL COMMENT '合同模板类型 1.安全责任书、2.检查通知单、3.整改通知单、4.复核通知单',
+                  `client_id`     BIGINT(20) UNSIGNED NOT NULL  COMMENT '客户ID',
+                  `file_id`	      VARCHAR(50) NOT NULL  COMMENT '文件ID',
+                  `status`        TINYINT(4) NOT NULL DEFAULT '1' COMMENT '1 可用 0 不可用 -1: 删除',
+                  `create_time`   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                  `update_time`   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='客户合同模板文件关联表';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-add-user-cloumn-certification" author="lxh">
+        <comment>
+            user 添加字段 实名认证 标识
+        </comment>
+        <sql>
+            <![CDATA[
+             alter table user add column certification  TINYINT(4) DEFAULT '2' COMMENT '是否实名认证：1 是，2 否';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-add-client_contract_file-cloumn-file_name" author="lxh">
+        <comment>
+            client_contract_file 合同模板添加文件名称字段
+        </comment>
+        <sql>
+            <![CDATA[
+             alter table client_contract_file add column file_name  VARCHAR(50) NOT NULL  COMMENT '文件原名称';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-add-user-cloumn-img_id" author="lxh">
+        <comment>
+            user 添加字段 签字图片id
+        </comment>
+        <sql>
+            <![CDATA[
+             alter table user add column image_id  BIGINT(20) DEFAULT NULL COMMENT '签字图片id';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-update-user-user_no" author="lxh">
+        <comment>
+            修改user 表user_no的默认值
+        </comment>
+        <sql>
+            <![CDATA[
+                alter table user  modify column user_no varchar(40) DEFAULT NULL COMMENT '用户编码';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-add-credit-task_rel-" author="lxh">
+        <comment>
+            积分模块表结构重构
+        </comment>
+        <sql>
+            <![CDATA[
+                DROP TABLE IF EXISTS `credits_exchange_rel`;
+                CREATE TABLE IF NOT EXISTS `credits_exchange_rel` (
+              `id` bigint(20) unsigned NOT NULL COMMENT '主键ID',
+              `credits_id` bigint(20) unsigned DEFAULT NULL COMMENT '积分明细表id',
+              `for_items` varchar(100) DEFAULT NULL COMMENT '兑换物品名称',
+              ` remark` varchar(200) DEFAULT NULL COMMENT '备注',
+              `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+              `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+              PRIMARY KEY (`id`),
+              KEY `查询索引` (`credits_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='积分兑换表';
+
+             DROP TABLE IF EXISTS `credits_rel`;
+             CREATE TABLE IF NOT EXISTS `credits_rel` (
+              `id` bigint(20) unsigned NOT NULL COMMENT '主键id',
+              `user_id` bigint(20) unsigned DEFAULT NULL COMMENT '用户ID',
+              `credits_num` bigint(10) unsigned zerofill DEFAULT NULL COMMENT '积分数量',
+              `type` tinyint(4) unsigned DEFAULT NULL COMMENT '积分变更类型（增加 1，减少 2）',
+              `description` varchar(200) DEFAULT NULL COMMENT '积分描述',
+              `status` tinyint(4) DEFAULT '1' COMMENT '状态 （未删除 1，已删除 2）',
+              `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+              `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+              PRIMARY KEY (`id`),
+              KEY `查询索引` (`user_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='积分明细表';
+
+        DROP TABLE IF EXISTS `credits_task_rel`;
+        CREATE TABLE IF NOT EXISTS `credits_task_rel` (
+      `id` bigint(20) unsigned NOT NULL COMMENT '主键ID',
+      `credits_id` bigint(20) unsigned DEFAULT NULL COMMENT '积分明细id',
+      `task_id` bigint(20) unsigned DEFAULT NULL COMMENT '任务ID',
+      `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+      `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+      PRIMARY KEY (`id`),
+      KEY `查询索引` (`credits_id`,`task_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='积分任务明细关联表';
+
+
+    DROP TABLE IF EXISTS `task_rel`;
+       CREATE TABLE IF NOT EXISTS `task_rel` (
+      `id` bigint(20) unsigned NOT NULL COMMENT '主键ID',
+      `code` varchar(60) DEFAULT NULL COMMENT '任务code编码',
+      `task_name` varchar(120) DEFAULT NULL COMMENT '任务名称',
+      `task_num` bigint(10) unsigned DEFAULT NULL COMMENT '任务积分数量',
+      `task_description` varchar(300) DEFAULT NULL COMMENT '任务描述/详情',
+      `status` tinyint(4) unsigned DEFAULT '1' COMMENT '状态：1 未删除，2 已删除',
+      `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+      `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='积分任务表';
+
+
+            ]]>
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="alert-update-credits_rel-credits_num-data" author="lxh">
+        <comment>
+            credits_rel 表credits_num 默认值为空
+        </comment>
+        <sql>
+            <![CDATA[
+                 alter table credits_rel  modify column credits_num bigint(10) unsigned DEFAULT '0' COMMENT '积分数量';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-update-user-gander-defult_data" author="lxh">
+        <comment>
+            修改user 表性别 默认值为空
+        </comment>
+        <sql>
+            <![CDATA[
+                alter table user  modify column gender tinyint(4) DEFAULT NULL COMMENT '性别 0 女,1 男';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-update-credits_exchange_rel-remark" author="lxh">
+        <comment>
+            修改credits_exchange_rel 表
+        </comment>
+        <sql>
+            <![CDATA[
+             alter table credits_exchange_rel  CHANGE  column ` remark` `remark` varchar(200) DEFAULT NULL COMMENT '备注';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="alert-update-task_rel-add-type" author="lxh">
+        <comment>
+            修改task_rel 表
+        </comment>
+        <sql>
+            <![CDATA[
+             alter table task_rel  add  column  `type` tinyint(4)  DEFAULT NULL COMMENT '类型:1 通用 2 政府 3 单位';
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="alert-add-client-add-credit_code" author="lxh">
+        <comment>
+            添加client 表 信用code
+        </comment>
+        <sql>
+            <![CDATA[
+             alter table client  add  column  `credit_code` varchar(200)  DEFAULT NULL COMMENT '统一社会信用代码
+';
+            ]]>
+        </sql>
+    </changeSet>
+
+
+
+</databaseChangeLog>

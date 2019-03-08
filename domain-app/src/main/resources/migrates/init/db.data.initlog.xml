@@ -1,0 +1,699 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="init-sys_role-sys_user-data" author="liqi" runOnChange="true">
+        <sql>
+            <![CDATA[
+                /*初始化超级管理角色*/
+                delete from `sys_role` where id ='200058115285323776';
+                INSERT INTO sys_role (id,name,code,sort_num,des,status,create_time,update_time)
+                VALUES (200058115285323776,'超级管理员','AUTH_SYS_SUPER_ADMIN',1,'',1,NOW(),NOW());
+                /*初始化超级管理*/
+                delete from `sys_user` where id ='200058115285323777';
+                INSERT INTO sys_user (id,per_id,login_name,pwd,salt,name,email,sex,telephone,avatar,isdisabled,status,create_time,update_time)
+VALUES (200058115285323777,0,'mydaoadmin','$2a$10$4ORYecDXXxE9rbLMOOoVUODgrBiXIonfxHlGnoKIR63KQS2ggtxWq','','超级管理员','',1,'','',1,1,NOW(),NOW());
+                /*初始化添加超级管理员关联关系 @update ykh 2018-05-28*/
+                delete from `sys_user_role` where id = '1000936810792620035';
+                INSERT INTO sys_user_role (id,user_id,role_id) VALUES (1000936810792620035,200058115285323777,200058115285323776);
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="init-data-table-region" author="lxh">
+        <comment>
+            修改字段类型
+        </comment>
+        <sql>
+            <![CDATA[
+                alter table region MODIFY pids VARCHAR(500) COMMENT '父级节点集合';
+            ]]>
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="alert-app-add-column-product" author="lxh">
+        <comment>
+            添加字段
+        </comment>
+        <sql>
+            <![CDATA[
+                alter table app add column pro_id bigint(20) DEFAULT '0' COMMENT '产品id';
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-user-table-dict" author="lxh" runOnChange="true">
+        <comment>
+            添加用户字典初始化数据
+        </comment>
+        <sql>
+            <![CDATA[
+
+         delete from `sys_dict_type` where id ='1056840343279988738';
+         delete from `sys_dict_type` where id ='1056840343279988739';
+         delete from `sys_dict_type` where id ='1056840343279988740';
+         delete from `sys_dict_type` where id ='1056845732906041351';
+         delete from `sys_dict_type` where id ='1056840343279988741';
+
+
+        INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `status`, `create_time`, `update_time`) VALUES
+        (1056840343279988738, '用户注册平台', 'reg_platform', 1, '2018-10-29 14:12:52', '2018-10-29 14:12:52'),
+        (1056840343279988739, '用户来源', 'source', 1, '2018-10-29 14:12:52', '2018-10-29 14:12:52'),
+        (1056840343279988740, '用户类型', 'source', 1, '2018-10-29 14:12:52', '2018-10-29 14:12:52'),
+        (1056845732906041351, '性别', 'gender', 1, '2018-10-29 14:12:52', '2018-10-29 14:12:52'),
+        (1056840343279988741, '用户状态', 'source', 1, '2018-10-29 14:12:52', '2018-10-29 14:12:52');
+
+
+         delete from `sys_dict` where id ='1056840343279988743';
+         delete from `sys_dict` where id ='1056844444084469762';
+         delete from `sys_dict` where id ='1056844444084469763';
+         delete from `sys_dict` where id ='1056844444084469764';
+         delete from `sys_dict` where id ='1056844444084469765';
+         delete from `sys_dict` where id ='1056844444084469766';
+         delete from `sys_dict` where id ='1056844444084469767';
+         delete from `sys_dict` where id ='1056844444084469768';
+         delete from `sys_dict` where id ='1056844444084469769';
+         delete from `sys_dict` where id ='1056845732906041346';
+         delete from `sys_dict` where id ='1056845732906041347';
+         delete from `sys_dict` where id ='1056845732906041348';
+         delete from `sys_dict` where id ='1056845732906041349';
+         delete from `sys_dict` where id ='1056845732906041350';
+         delete from `sys_dict` where id ='1056845732906041352';
+         delete from `sys_dict` where id ='1056845732906041353';
+
+
+
+        INSERT INTO `sys_dict` (`id`, `type_id`, `status`, `code`, `name`, `description`, `isdel`, `create_time`, `create_user`, `create_ip`, `update_time`, `update_user`, `update_ip`) VALUES
+
+        /*(1056840343279988743,1056840343279988738,1, '1', '云平台', '', 1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '127.0.0.1'),*/
+
+        (1056844444084469762,1056840343279988738,1, '2', 'app', '',  1, '2018-10-29 16:49:07', 'admin', '27.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),
+        (1056844444084469763,1056840343279988738,1, '3', '公众号', '',  1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),
+        (1056844444084469764,1056840343279988738,1, '4', '门户网站', '', 1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),
+
+        (1056844444084469765,1056840343279988739, 1,'1', '民安保', '',  1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),
+        (1056844444084469766,1056840343279988739, 1,'2', '其他', '',  1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),
+
+        (1056844444084469768,1056840343279988740, 1,'1', '正式用户', '',  1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),
+        (1056844444084469767,1056840343279988740, 1,2, '公海用户', '',  1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),
+
+        /*(1056844444084469769,1056840343279988740, 1,3, '其他', '',1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),*/
+
+        (1056845732906041346,1056840343279988741, 1,'0', '禁用', '',  1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),
+        (1056845732906041347,1056840343279988741, 1,'1', '启用', '',  1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),
+
+        /*(1056845732906041348,1056840343279988741, 1,'2', '试用', '',  1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),
+          (1056845732906041349,1056840343279988741, 1,'3', '待审核', '',  1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),
+          (1056845732906041350,1056840343279988741, 1,'4', '申请', '',  1, '2018-10-29 16:49:07','admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),*/
+
+           (1056845732906041352,1056845732906041351,1, '1', '男', '', 1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1'),
+        (1056845732906041353,1056845732906041351, 1,'0', '女', '',  1, '2018-10-29 16:49:07', 'admin', '27.0.0.1', '2018-10-29 16:49:10', 'admin', '12.0.0.1');
+
+            ]]>
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="add-post-table-dict" author="lxh" runOnChange="true">
+    <comment>
+        添加职务数据
+    </comment>
+    <sql>
+        <![CDATA[
+
+         delete from `sys_dict_type` where id ='1057182115038334978';
+
+        INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `status`, `create_time`, `update_time`) VALUES
+        (1057182115038334978, '职务', 'post', 1, '2018-10-29 14:12:52', '2018-10-29 14:12:52');
+
+        delete from `sys_dict_type` where id ='1057182115038334979';
+        delete from `sys_dict_type` where id ='1057182115038334980';
+        delete from `sys_dict_type` where id ='1057182115038334981';
+
+        INSERT INTO `sys_dict` (`id`, `type_id`, `status`, `code`, `name`, `description`, `isdel`, `create_time`, `create_user`, `create_ip`, `update_time`, `update_user`, `update_ip`) VALUES
+
+        (1057182115038334979,1057182115038334978,1, 'SECTION_CHIEF', '科长', '', 1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '127.0.0.1'),
+        (1057182115038334980,1057182115038334978,1, 'Director', '局长', '', 1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '127.0.0.1'),
+        (1057182115038334981,1057182115038334978,1, 'City-manager', '城市管理员', '', 1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '127.0.0.1');
+
+        ]]>
+    </sql>
+    </changeSet>
+
+
+    <changeSet id="add-business-table-dict" author="lxh" runOnChange="true">
+        <comment>
+            添加行业类型数据
+        </comment>
+        <sql>
+            <![CDATA[
+
+         delete from `sys_dict_type` where id ='1057818903951978497';
+
+        INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `status`, `create_time`, `update_time`) VALUES
+        (1057818903951978497, '行业类型', 'business', 1, '2018-10-29 14:12:52', '2018-10-29 14:12:52');
+
+        delete from `sys_dict_type` where id ='1057818903989727233';
+        delete from `sys_dict_type` where id ='1057818903989727234';
+        delete from `sys_dict_type` where id ='1057818903989727235';
+
+        ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-Authorize-table-dict" author="lxh" runOnChange="true">
+        <comment>
+            添加登录权限数据
+        </comment>
+        <sql>
+            <![CDATA[
+
+         delete from `sys_dict_type` where id ='1057818903989727236';
+
+        INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `status`, `create_time`, `update_time`) VALUES
+        (1057818903989727236, '登录权限', 'LoginClient_Authorize', 1, '2018-10-29 14:12:52', '2018-10-29 14:12:52');
+
+        delete from `sys_dict_type` where id ='1057818903989727237';
+        delete from `sys_dict_type` where id ='1057818903989727238';
+
+        INSERT INTO `sys_dict` (`id`, `type_id`, `status`, `code`, `name`, `description`, `isdel`, `create_time`, `create_user`, `create_ip`, `update_time`, `update_user`, `update_ip`) VALUES
+
+        (1057818903989727237,1057818903989727236,1, 'LOGIN_MAB_APP', '民安保App', '', 1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '127.0.0.1'),
+
+        (1057818903989727238,1057818903989727236,1, 'LOGIN_MAB_PC', '企业端', '', 1, '2018-10-29 16:49:07', 'admin', '127.0.0.1', '2018-10-29 16:49:10', 'admin', '127.0.0.1');
+
+        ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-sys-res-pc-menu" author="lxh" runOnChange="true">
+        <comment>
+            添加运营端菜单数据
+        </comment>
+        <sql>
+            <![CDATA[
+        delete from `sys_res` where id ='1027036716629757953';
+        delete from `sys_res` where id ='1064344521304756226';
+        delete from `sys_res` where id ='1064344521304756227';
+        delete from `sys_res` where id ='1064344521304756228';
+        delete from `sys_res` where id ='1064344521304756229';
+        delete from `sys_res` where id ='1064344521304756230';
+        delete from `sys_res` where id ='1064344521304756231';
+        delete from `sys_res` where id ='1064344521304756232';
+        delete from `sys_res` where id ='1064344521304756233';
+        delete from `sys_res` where id ='1064344521304756234';
+        delete from `sys_res` where id ='1064344521304756235';
+        delete from `sys_res` where id ='1064344521304756236';
+        delete from `sys_res` where id ='1064344521304756237';
+        delete from `sys_res` where id ='1064344521304756238';
+        delete from `sys_res` where id ='1064344521304756239';
+        delete from `sys_res` where id ='1064344521304756240';
+        delete from `sys_res` where id ='1064344521304756241';
+        delete from `sys_res` where id ='1064344521329922049';
+        delete from `sys_res` where id ='1064344521329922050';
+        delete from `sys_res` where id ='1064344521329922051';
+        delete from `sys_res` where id ='1064344521329922052';
+        delete from `sys_res` where id ='1064344521329922053';
+        delete from `sys_res` where id ='1064344521329922054';
+        delete from `sys_res` where id ='1064344521329922055';
+        delete from `sys_res` where id ='1064344521329922056';
+        delete from `sys_res` where id ='1064344521329922057';
+        delete from `sys_res` where id ='1064344680239521794';
+        delete from `sys_res` where id ='1064344680239521795';
+        delete from `sys_res` where id ='1064344680239521796';
+        delete from `sys_res` where id ='1064344680239521797';
+        delete from `sys_res` where id ='1064344680239521798';
+        delete from `sys_res` where id ='1064344680239521799';
+        delete from `sys_res` where id ='1064344680277270529';
+        delete from `sys_res` where id ='1064344680277270530';
+        delete from `sys_res` where id ='1064344680277270531';
+        delete from `sys_res` where id ='1064344680277270532';
+        delete from `sys_res` where id ='1064344680277270533';
+        delete from `sys_res` where id ='1064344680277270534';
+        delete from `sys_res` where id ='1064344680277270535';
+        delete from `sys_res` where id ='1064344680277270536';
+        delete from `sys_res` where id ='1064344680277270537';
+        delete from `sys_res` where id ='1064344680277270538';
+        delete from `sys_res` where id ='1064344680277270539';
+        delete from `sys_res` where id ='1064344680277270540';
+        delete from `sys_res` where id ='1064344680277270541';
+        delete from `sys_res` where id ='1064344680277270542';
+        delete from `sys_res` where id ='1064344680277270543';
+        delete from `sys_res` where id ='1064344680277270544';
+        delete from `sys_res` where id ='1064344680277270545';
+        delete from `sys_res` where id ='1064344680277270546';
+        delete from `sys_res` where id ='1064344680277270547';
+        delete from `sys_res` where id ='1064344680277270548';
+        delete from `sys_res` where id ='1064344680277270549';
+        delete from `sys_res` where id ='1064344680277270550';
+        delete from `sys_res` where id ='1064344680277270551';
+        delete from `sys_res` where id ='1064344680277270552';
+        delete from `sys_res` where id ='1064344680277270553';
+        delete from `sys_res` where id ='1064344680277270554';
+        delete from `sys_res` where id ='1064344680277270555';
+        delete from `sys_res` where id ='1064344680277270556';
+        delete from `sys_res` where id ='1064344680277270557';
+        delete from `sys_res` where id ='1064344680281464834';
+        delete from `sys_res` where id ='1064344680281464835';
+        delete from `sys_res` where id ='1064344680281464836';
+        delete from `sys_res` where id ='1064344680281464837';
+        delete from `sys_res` where id ='1064344680281464838';
+
+        delete from `sys_res` where id ='1064344680277270558';
+        delete from `sys_res` where id ='1064344680277270559';
+        delete from `sys_res` where id ='1064344680277270560';
+        delete from `sys_res` where id ='1064344680277270561';
+        delete from `sys_res` where id ='1064344680277270562';
+        delete from `sys_res` where id ='1064344680277270563';
+        delete from `sys_res` where id ='1064344680277270564';
+        delete from `sys_res` where id ='1064344680277270565';
+        delete from `sys_res` where id ='1064344680277270566';
+        delete from `sys_res` where id ='1064344680277270567';
+        delete from `sys_res` where id ='1064344680277270568';
+        delete from `sys_res` where id ='1064344680277270569';
+        delete from `sys_res` where id ='1064344680277270570';
+        delete from `sys_res` where id ='1064344680277270571';
+        delete from `sys_res` where id ='1064344680277270572';
+        delete from `sys_res` where id ='1064344680277270573';
+
+            INSERT INTO `sys_res` VALUES (1027036716629757953, 0, '风险源库', 'mab:risks', 'risk-library', 5, 1, 'fa fa-bar-chart-o
+', '', '', 1, '', 1, '2018-08-08 11:40:09', '2018-11-16 14:03:01', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756226, 1064344680277270535, '禁用', 'mab:user:inquire:stop', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:48:08', '2018-11-19 10:47:59', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756227, 1064344680277270535, '启用', 'mab:user:inquire:start', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:49:29', '2018-11-19 10:48:00', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756228, 1064344680277270535, '导出', 'mab:user:inquire:export', '', 2, 1, '', '', '', 2, '', 1, '2018-08-08 15:50:02', '2018-11-19 10:48:02', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756229, 1064344680277270535, '重置密码', 'mab:user:inquire:reset:pwd', '', 3, 1, '', '', '', 2, '', 1, '2018-08-08 15:50:28', '2018-11-19 10:48:05', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756230, 1064344680277270537, '导出', 'mab:per:export', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:51:41', '2018-11-19 10:48:37', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756231, 1064344680277270537, '编辑', 'mab:per:edit', '', 2, 1, '', '', '', 2, '', 1, '2018-08-08 15:52:21', '2018-11-19 10:48:39', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756232, 1064344680277270537, '新建人员', 'mab:per:add', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:53:17', '2018-11-19 10:48:41', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756233, 1064344680277270537, '生成用户', 'mab:per:generate', '', 2, 1, '', '', '', 2, '', 1, '2018-08-08 15:53:34', '2018-11-19 10:48:43', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756234, 1064344680277270537, '删除', 'mab:per:delete', '', 3, 1, '', '', '', 2, '', 1, '2018-08-08 15:53:54', '2018-11-19 10:48:44', NULL);
+
+
+INSERT INTO `sys_res` VALUES (1064344680277270571, 1064344680277270537, '编辑部门', 'mab:per:edit:tree', '', 2, 1, '', '', '', 2, '', 1, '2018-08-08 15:52:21', '2018-11-19 10:48:39', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270572, 1064344680277270537, '新建部门', 'mab:per:add:tree', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:53:17', '2018-11-19 10:48:41', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270573, 1064344680277270537, '删除部门', 'mab:per:delete:tree', '', 3, 1, '', '', '', 2, '', 1, '2018-08-08 15:53:54', '2018-11-19 10:48:44', NULL);
+
+INSERT INTO `sys_res` VALUES (1064344521304756235, 1064344680277270538, '启用', 'mab:system:user:start', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:55:34', '2018-11-19 10:49:15', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756236, 1064344680277270538, '禁用', 'mab:system:user:stop', '', 2, 1, '', '', '', 2, '', 1, '2018-08-08 15:55:55', '2018-11-19 10:49:16', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756237, 1064344680277270538, '删除', 'mab:system:user:delete', '', 3, 1, '', '', '', 2, '', 1, '2018-08-08 15:56:10', '2018-11-19 10:49:19', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756238, 1064344680277270538, '导出', 'mab:system:user:export', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:56:57', '2018-11-19 10:49:21', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756239, 1064344680277270538, '重置密码', 'mab:system:user:update:pwd', '', 2, 1, '', '', '', 2, '', 1, '2018-08-08 15:57:16', '2018-11-19 10:49:23', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756240, 1064344680277270538, '分配角色', 'mab:system:user:assign:role', '', 3, 1, '', '', '', 2, '', 1, '2018-08-08 15:57:41', '2018-11-19 10:49:25', NULL);
+INSERT INTO `sys_res` VALUES (1064344521304756241, 1064344680277270539, '新建', 'mab:system:role:list:add', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:58:42', '2018-11-19 10:49:43', NULL);
+INSERT INTO `sys_res` VALUES (1064344521329922049, 1064344680277270539, '编辑', 'mab:system:role:list:edit', '', 2, 1, '', '', '', 2, '', 1, '2018-08-08 15:58:58', '2018-11-19 10:49:45', NULL);
+INSERT INTO `sys_res` VALUES (1064344521329922050, 1064344680277270539, '删除', 'mab:system:role:list:delete', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 16:01:18', '2018-11-19 10:49:46', NULL);
+INSERT INTO `sys_res` VALUES (1064344521329922051, 1064344680277270540, '导出', 'mab:system:operation:log:export', '', 2, 1, '', '', '', 2, '', 1, '2018-08-08 16:01:37', '2018-11-19 10:50:16', NULL);
+INSERT INTO `sys_res` VALUES (1064344521329922052, 1064344680277270541, '新建', 'mab:system:dict:list:add', '', 3, 1, '', '', '', 2, '', 1, '2018-08-08 16:02:01', '2018-11-19 10:50:38', NULL);
+INSERT INTO `sys_res` VALUES (1064344521329922053, 1064344680277270541, '启用', 'mab:system:dict:list:start', '', 4, 1, '', '', '', 2, '', 1, '2018-08-08 16:02:30', '2018-11-19 10:50:41', NULL);
+INSERT INTO `sys_res` VALUES (1064344521329922054, 1064344680277270541, '编辑', 'mab:system:dict:list:edit', '', 5, 1, '', '', '', 2, '', 1, '2018-08-08 16:02:54', '2018-11-19 10:50:43', NULL);
+INSERT INTO `sys_res` VALUES (1064344521329922055, 1064344680277270541, '禁用', 'mab:system:dict:list:stop', '', 6, 1, '', '', '', 2, '', 1, '2018-08-08 16:03:14', '2018-11-19 10:50:46', NULL);
+INSERT INTO `sys_res` VALUES (1064344521329922056, 1064344680277270542, '兑换', 'mab:system:integral:list:exchange', '', 4, 1, '', '', '', 2, '', 1, '2018-08-09 12:06:23', '2018-11-19 10:51:14', NULL);
+INSERT INTO `sys_res` VALUES (1064344521329922057, 1064344680239521799, '产品应用', 'mab:applications', 'product-apply', 4, 1, 'fa fa-user-circle', '', '', 1, '', 1, '2018-08-08 11:23:57', '2018-11-19 10:42:03', NULL);
+INSERT INTO `sys_res` VALUES (1064344680239521794, 0, '首页', 'mab:home', 'system-shouye', 1, 1, 'iconfont icon-shouye', '', '', 1, '', 1, '2018-08-08 10:35:08', '2018-11-19 10:30:35', NULL);
+INSERT INTO `sys_res` VALUES (1064344680239521795, 1064344680239521794, '系统首页', 'mab:home:syshome', 'system-shouye', 1, 1, 'iconfont icon-shouye', '', '', 1, '', 1, '2018-08-08 10:38:38', '2018-11-19 10:30:45', NULL);
+INSERT INTO `sys_res` VALUES (1064344680239521796, 0, '客户管理', 'mab:client:list', 'customer-info', 2, 1, 'iconfont icon-xiangmuguanli', '', '', 1, '', 1, '2018-08-08 10:49:40', '2018-11-19 10:30:58', NULL);
+INSERT INTO `sys_res` VALUES (1064344680239521797, 1064344680239521796, '客户信息', 'mab:client:info', 'customer-info', 1, 1, 'fa fa-info', '', '', 1, '', 1, '2018-08-08 11:14:06', '2018-11-19 10:31:09', NULL);
+INSERT INTO `sys_res` VALUES (1064344680239521798, 1064344680239521796, '授权记录', 'mab:client:authorize:record', 'authorize-record', 2, 1, 'fa fa-dot-circle-o', '', '', 1, '', 1, '2018-08-08 11:15:38', '2018-11-19 10:31:44', NULL);
+INSERT INTO `sys_res` VALUES (1064344680239521799, 0, '应用管理', 'mab:application:list', 'function-menu', 3, 1, 'iconfont icon-wozaixianchang', '', '', 1, '', 1, '2018-08-08 11:20:03', '2018-11-19 10:31:54', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270529, 1064344680239521799, '功能菜单', 'mab:application:function:menu', 'function-menu', 1, 1, 'fa fa-user-circle', '', '', 1, '', 1, '2018-08-08 11:21:24', '2018-11-19 10:32:19', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270530, 0, '基础信息', 'mab:base:info', 'adminis-division', 4, 1, 'iconfont icon-xitongguanli', '', '', 1, '', 1, '2018-08-08 11:25:37', '2018-11-19 10:32:25', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270531, 1064344680277270530, '行政区域', 'mab:base:administrative:regions', 'adminis-division', 2, 1, 'fa fa-user-secret', '', '', 1, '', 1, '2018-08-08 11:32:13', '2018-11-19 10:32:40', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270532, 1064344680277270530, '行业类型', 'mab:base:administrative:type', 'industry-type', 3, 1, 'fa fa-cogs', '', '', 1, '', 1, '2018-08-08 11:35:04', '2018-11-19 10:32:51', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270533, 1027036716629757953, '风险源库', 'mab:risk', 'risk-library', 1, 1, 'fa fa-info', '', '', 1, '', 1, '2018-08-08 11:41:09', '2018-11-19 10:33:38', NULL);
+
+INSERT INTO `sys_res` VALUES (1064344680281464837, 1064344680277270533, '新建条目', 'mab:risk:add', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:43:38', '2018-11-19 10:47:25', NULL);
+INSERT INTO `sys_res` VALUES (1064344680281464838, 1064344680277270533, '导入', 'mab:risk:import', '', 3, 1, '', '', '', 2, '', 1, '2018-08-08 15:46:23', '2018-11-19 10:47:27', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270566, 1064344680277270533, '编辑', 'mab:risk:edit', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:31:20', '2018-11-19 10:44:46', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270567, 1064344680277270533, '删除', 'mab:risk:delete', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:31:20', '2018-11-19 10:44:46', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270568, 1064344680277270533, '新建类型', 'mab:risk:add:tree', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:31:20', '2018-11-19 10:44:40', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270569, 1064344680277270533, '编辑类型', 'mab:risk:edit:tree', '', 2, 1, '', '', '', 2, '', 1, '2018-08-08 15:31:22', '2018-11-19 10:44:42', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270570, 1064344680277270533, '删除类型', 'mab:risk:delete:tree', '', 3, 1, '', '', '', 2, '', 1, '2018-08-08 15:31:24', '2018-11-19 10:44:44', NULL);
+
+
+INSERT INTO `sys_res` VALUES (1064344680277270534, 0, '用户管理', 'mab:user:list', 'user-query', 6, 1, 'iconfont icon-yewurenyuanxinxiguanli
+', '', '', 1, '', 1, '2018-08-08 11:47:05', '2018-11-19 10:33:53', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270535, 1064344680277270534, '用户查询', 'mab:user:inquire', 'user-query', 1, 1, 'iconfont icon-shouye', '', '', 1, '', 1, '2018-08-08 11:51:49', '2018-11-19 10:34:07', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270536, 0, '系统管理', 'mab:system:list', 'internal-personnel', 7, 1, 'iconfont icon-iconset0292', '', '', 1, '', 1, '2018-08-08 13:37:55', '2018-11-19 10:34:26', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270537, 1064344680277270536, '内部人员', 'mab:per', 'internal-personnel', 1, 1, 'fa fa-map-marker', '', '', 1, '', 1, '2018-08-08 13:39:13', '2018-11-19 10:41:25', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270538, 1064344680277270536, '系统用户', 'mab:system:user', 'system-user', 8, 1, 'fa fa-calculator', '', '', 1, '', 1, '2018-08-08 13:40:21', '2018-11-19 10:41:28', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270539, 1064344680277270536, '角色管理', 'mab:system:role:list', 'role-manage', 1, 1, 'fa fa-check-square-o', '', '', 1, '', 1, '2018-08-08 13:41:22', '2018-11-19 10:41:30', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270540, 1064344680277270536, '运营日志', 'mab:system:operation:log', 'operation-log', 2, 1, 'fa fa-jpy', '', '', 1, '', 1, '2018-08-08 13:42:04', '2018-11-19 10:41:32', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270541, 1064344680277270536, '字典管理', 'mab:system:dict:list', 'dict-manage', 3, 1, 'fa fa-jpy', '', '', 1, '', 1, '2018-08-08 13:43:25', '2018-11-19 10:41:34', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270542, 1064344680277270536, '积分管理', 'mab:system:integral:list', 'jifen-manage', 4, 1, 'fa fa-jpy', '', '', 1, '', 1, '2018-08-08 13:44:06', '2018-11-19 10:41:36', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270543, 1064344680239521797, '注册', 'mab:client:info:login', '', 6, 1, '', '', '', 2, '', 1, '2018-08-08 13:47:09', '2018-11-19 10:43:32', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270544, 1064344680239521797, '编辑', 'mab:client:info:edit', '', 7, 1, '', '', '', 2, '', 1, '2018-08-08 13:47:36', '2018-11-19 10:43:34', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270558, 1064344680239521797, '上传模板', 'mab:client:info:upload', '', 7, 1, '', '', '', 2, '', 1, '2018-08-08 13:47:38', '2018-11-19 10:43:38', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270545, 1064344680239521797, '授权', 'mab:client:info:authorize', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:10:53', '2018-11-19 10:43:36', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270546, 1064344680239521797, '重置密码', 'mab:client:info:reset:pwd', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:22:03', '2018-11-19 10:43:39', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270559, 1064344680239521797, '导出', 'mab:client:info:reset:export', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:22:03', '2018-11-19 10:43:39', NULL);
+
+INSERT INTO `sys_res` VALUES (1064344680277270547, 1064344680277270529, '启用', 'mab:application:function:menu:strat', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:23:45', '2018-11-19 10:44:35', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270548, 1064344680277270529, '禁用', 'mab:application:function:menu:stop', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:25:41', '2018-11-19 10:44:37', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270549, 1064344680277270529, '删除', 'mab:application:function:menu:delete', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:26:50', '2018-11-19 10:44:41', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270550, 1064344680277270529, '编辑', 'mab:application:function:menu:edit', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:30:22', '2018-11-19 10:44:43', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270551, 1064344680277270529, '新建', 'mab:application:function:menu:add', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:31:20', '2018-11-19 10:44:46', NULL);
+
+INSERT INTO `sys_res` VALUES (1064344680277270560, 1064344680277270529, '删除菜单', 'mab:application:function:menu:delete:tree', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:26:50', '2018-11-19 10:44:41', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270561, 1064344680277270529, '编辑菜单', 'mab:application:function:menu:edit:tree', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:30:22', '2018-11-19 10:44:43', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270562, 1064344680277270529, '新建菜单', 'mab:application:function:menu:add:tree', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:31:20', '2018-11-19 10:44:46', NULL);
+
+INSERT INTO `sys_res` VALUES (1064344680277270552, 1064344521329922057, '新建', 'mab:applications:add', '', 2, 1, '', '', '', 2, '', 1, '2018-08-08 15:31:43', '2018-11-19 10:45:36', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270553, 1064344521329922057, '编辑', 'mab:applications:edit', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:36:44', '2018-11-19 10:45:37', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270554, 1064344521329922057, '删除', 'mab:applications:delete', '', 2, 1, '', '', '', 2, '', 1, '2018-08-08 15:37:20', '2018-11-19 10:45:39', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270555, 1064344680277270531, '新建', 'mab:base:administrative:regions:add', '', 3, 1, '', '', '', 2, '', 1, '2018-08-08 15:37:43', '2018-11-19 10:46:30', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270556, 1064344680277270531, '编辑', 'mab:base:administrative:regions:edit', '', 4, 1, '', '', '', 2, '', 1, '2018-08-08 15:38:21', '2018-11-19 10:46:32', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270557, 1064344680277270531, '删除', 'mab:base:administrative:regions:delete', '', 5, 1, '', '', '', 2, '', 1, '2018-08-08 15:38:44', '2018-11-19 10:46:33', NULL);
+
+INSERT INTO `sys_res` VALUES (1064344680277270563, 1064344680277270531, '新建区域', 'mab:base:administrative:regions:add:tree', '', 3, 1, '', '', '', 2, '', 1, '2018-08-08 15:37:43', '2018-11-19 10:46:30', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270564, 1064344680277270531, '编辑区域', 'mab:base:administrative:regions:edit:tree', '', 4, 1, '', '', '', 2, '', 1, '2018-08-08 15:38:21', '2018-11-19 10:46:32', NULL);
+INSERT INTO `sys_res` VALUES (1064344680277270565, 1064344680277270531, '删除区域', 'mab:base:administrative:regions:delete:tree', '', 5, 1, '', '', '', 2, '', 1, '2018-08-08 15:38:44', '2018-11-19 10:46:33', NULL);
+
+INSERT INTO `sys_res` VALUES (1064344680281464834, 1064344680277270532, '新建', 'mab:base:administrative:type:add', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:39:54', '2018-11-19 10:46:52', NULL);
+INSERT INTO `sys_res` VALUES (1064344680281464835, 1064344680277270532, '编辑', 'mab:base:administrative:type:edit', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:40:42', '2018-11-19 10:46:54', NULL);
+INSERT INTO `sys_res` VALUES (1064344680281464836, 1064344680277270532, '删除', 'mab:base:administrative:type:delete', '', 1, 1, '', '', '', 2, '', 1, '2018-08-08 15:42:56', '2018-11-19 10:46:55', NULL);
+
+        ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-data-sys_role_res" author="zyw" runOnChange="true">
+        <comment>
+            添加超级管理员角色菜单中间表
+        </comment>
+        <sql>
+            <![CDATA[
+
+            delete from `sys_role_res` where id ='1027036716629757953';
+            delete from `sys_role_res` where id ='1064344521304756226';
+            delete from `sys_role_res` where id ='1064344521304756227';
+            delete from `sys_role_res` where id ='1064344521304756228';
+            delete from `sys_role_res` where id ='1064344521304756229';
+            delete from `sys_role_res` where id ='1064344521304756230';
+            delete from `sys_role_res` where id ='1064344521304756231';
+            delete from `sys_role_res` where id ='1064344521304756232';
+            delete from `sys_role_res` where id ='1064344521304756233';
+            delete from `sys_role_res` where id ='1064344521304756234';
+            delete from `sys_role_res` where id ='1064344521304756235';
+            delete from `sys_role_res` where id ='1064344521304756236';
+            delete from `sys_role_res` where id ='1064344521304756237';
+            delete from `sys_role_res` where id ='1064344521304756238';
+            delete from `sys_role_res` where id ='1064344521304756239';
+            delete from `sys_role_res` where id ='1064344521304756240';
+            delete from `sys_role_res` where id ='1064344521304756241';
+            delete from `sys_role_res` where id ='1064344521329922049';
+            delete from `sys_role_res` where id ='1064344521329922050';
+            delete from `sys_role_res` where id ='1064344521329922051';
+            delete from `sys_role_res` where id ='1064344521329922052';
+            delete from `sys_role_res` where id ='1064344521329922053';
+            delete from `sys_role_res` where id ='1064344521329922054';
+            delete from `sys_role_res` where id ='1064344521329922055';
+            delete from `sys_role_res` where id ='1064344521329922056';
+            delete from `sys_role_res` where id ='1064344521329922057';
+            delete from `sys_role_res` where id ='1064344680239521794';
+            delete from `sys_role_res` where id ='1064344680239521795';
+            delete from `sys_role_res` where id ='1064344680239521796';
+            delete from `sys_role_res` where id ='1064344680239521797';
+            delete from `sys_role_res` where id ='1064344680239521798';
+            delete from `sys_role_res` where id ='1064344680239521799';
+            delete from `sys_role_res` where id ='1064344680277270529';
+            delete from `sys_role_res` where id ='1064344680277270530';
+            delete from `sys_role_res` where id ='1064344680277270531';
+            delete from `sys_role_res` where id ='1064344680277270532';
+            delete from `sys_role_res` where id ='1064344680277270533';
+            delete from `sys_role_res` where id ='1064344680277270534';
+            delete from `sys_role_res` where id ='1064344680277270535';
+            delete from `sys_role_res` where id ='1064344680277270536';
+            delete from `sys_role_res` where id ='1064344680277270537';
+            delete from `sys_role_res` where id ='1064344680277270538';
+            delete from `sys_role_res` where id ='1064344680277270539';
+            delete from `sys_role_res` where id ='1064344680277270540';
+            delete from `sys_role_res` where id ='1064344680277270541';
+            delete from `sys_role_res` where id ='1064344680277270542';
+            delete from `sys_role_res` where id ='1064344680277270543';
+            delete from `sys_role_res` where id ='1064344680277270544';
+            delete from `sys_role_res` where id ='1064344680277270545';
+            delete from `sys_role_res` where id ='1064344680277270546';
+            delete from `sys_role_res` where id ='1064344680277270547';
+            delete from `sys_role_res` where id ='1064344680277270548';
+            delete from `sys_role_res` where id ='1064344680277270549';
+            delete from `sys_role_res` where id ='1064344680277270550';
+            delete from `sys_role_res` where id ='1064344680277270551';
+            delete from `sys_role_res` where id ='1064344680277270552';
+            delete from `sys_role_res` where id ='1064344680277270553';
+            delete from `sys_role_res` where id ='1064344680277270554';
+            delete from `sys_role_res` where id ='1064344680277270555';
+            delete from `sys_role_res` where id ='1064344680277270556';
+            delete from `sys_role_res` where id ='1064344680277270557';
+            delete from `sys_role_res` where id ='1064344680281464834';
+            delete from `sys_role_res` where id ='1064344680281464835';
+            delete from `sys_role_res` where id ='1064344680281464836';
+            delete from `sys_role_res` where id ='1064344680281464837';
+            delete from `sys_role_res` where id ='1064344680281464838';
+
+
+            delete from `sys_role_res` where id ='1064344680277270558';
+            delete from `sys_role_res` where id ='1064344680277270559';
+            delete from `sys_role_res` where id ='1064344680277270560';
+            delete from `sys_role_res` where id ='1064344680277270561';
+            delete from `sys_role_res` where id ='1064344680277270562';
+            delete from `sys_role_res` where id ='1064344680277270563';
+            delete from `sys_role_res` where id ='1064344680277270564';
+            delete from `sys_role_res` where id ='1064344680277270565';
+            delete from `sys_role_res` where id ='1064344680277270566';
+            delete from `sys_role_res` where id ='1064344680277270567';
+            delete from `sys_role_res` where id ='1064344680277270568';
+            delete from `sys_role_res` where id ='1064344680277270569';
+            delete from `sys_role_res` where id ='1064344680277270570';
+            delete from `sys_role_res` where id ='1064344680277270571';
+            delete from `sys_role_res` where id ='1064344680277270572';
+            delete from `sys_role_res` where id ='1064344680277270573';
+
+            insert sys_role_res(id,res_id,role_id) values(1027036716629757953,1027036716629757953,200058115285323776),
+            (1064344521304756226,1064344521304756226,200058115285323776),
+            (1064344521304756227,1064344521304756227,200058115285323776),
+            (1064344521304756228,1064344521304756228,200058115285323776),
+            (1064344521304756229,1064344521304756229,200058115285323776),
+            (1064344521304756230,1064344521304756230,200058115285323776),
+            (1064344521304756231,1064344521304756231,200058115285323776),
+            (1064344521304756232,1064344521304756232,200058115285323776),
+            (1064344521304756233,1064344521304756233,200058115285323776),
+            (1064344521304756234,1064344521304756234,200058115285323776),
+            (1064344521304756235,1064344521304756235,200058115285323776),
+            (1064344521304756236,1064344521304756236,200058115285323776),
+            (1064344521304756237,1064344521304756237,200058115285323776),
+            (1064344521304756238,1064344521304756238,200058115285323776),
+            (1064344521304756239,1064344521304756239,200058115285323776),
+            (1064344521304756240,1064344521304756240,200058115285323776),
+            (1064344521304756241,1064344521304756241,200058115285323776),
+            (1064344521329922049,1064344521329922049,200058115285323776),
+            (1064344521329922050,1064344521329922050,200058115285323776),
+            (1064344521329922051,1064344521329922051,200058115285323776),
+            (1064344521329922052,1064344521329922052,200058115285323776),
+            (1064344521329922053,1064344521329922053,200058115285323776),
+            (1064344521329922054,1064344521329922054,200058115285323776),
+            (1064344521329922055,1064344521329922055,200058115285323776),
+            (1064344521329922056,1064344521329922056,200058115285323776),
+            (1064344521329922057,1064344521329922057,200058115285323776),
+            (1064344680239521794,1064344680239521794,200058115285323776),
+            (1064344680239521795,1064344680239521795,200058115285323776),
+            (1064344680239521796,1064344680239521796,200058115285323776),
+            (1064344680239521797,1064344680239521797,200058115285323776),
+            (1064344680239521798,1064344680239521798,200058115285323776),
+            (1064344680239521799,1064344680239521799,200058115285323776),
+            (1064344680277270529,1064344680277270529,200058115285323776),
+            (1064344680277270530,1064344680277270530,200058115285323776),
+            (1064344680277270531,1064344680277270531,200058115285323776),
+            (1064344680277270532,1064344680277270532,200058115285323776),
+            (1064344680277270533,1064344680277270533,200058115285323776),
+            (1064344680277270534,1064344680277270534,200058115285323776),
+            (1064344680277270535,1064344680277270535,200058115285323776),
+            (1064344680277270536,1064344680277270536,200058115285323776),
+            (1064344680277270537,1064344680277270537,200058115285323776),
+            (1064344680277270538,1064344680277270538,200058115285323776),
+            (1064344680277270539,1064344680277270539,200058115285323776),
+            (1064344680277270540,1064344680277270540,200058115285323776),
+            (1064344680277270541,1064344680277270541,200058115285323776),
+            (1064344680277270542,1064344680277270542,200058115285323776),
+            (1064344680277270543,1064344680277270543,200058115285323776),
+            (1064344680277270544,1064344680277270544,200058115285323776),
+            (1064344680277270545,1064344680277270545,200058115285323776),
+            (1064344680277270546,1064344680277270546,200058115285323776),
+            (1064344680277270547,1064344680277270547,200058115285323776),
+            (1064344680277270548,1064344680277270548,200058115285323776),
+            (1064344680277270549,1064344680277270549,200058115285323776),
+            (1064344680277270550,1064344680277270550,200058115285323776),
+            (1064344680277270551,1064344680277270551,200058115285323776),
+            (1064344680277270552,1064344680277270552,200058115285323776),
+            (1064344680277270553,1064344680277270553,200058115285323776),
+            (1064344680277270554,1064344680277270554,200058115285323776),
+            (1064344680277270555,1064344680277270555,200058115285323776),
+            (1064344680277270556,1064344680277270556,200058115285323776),
+            (1064344680277270557,1064344680277270557,200058115285323776),
+            (1064344680281464834,1064344680281464834,200058115285323776),
+            (1064344680281464835,1064344680281464835,200058115285323776),
+            (1064344680281464836,1064344680281464836,200058115285323776),
+            (1064344680281464837,1064344680281464837,200058115285323776),
+            (1064344680281464838,1064344680281464838,200058115285323776),
+
+            (1064344680277270558,1064344680277270558,200058115285323776),
+            (1064344680277270559,1064344680277270559,200058115285323776),
+            (1064344680277270560,1064344680277270560,200058115285323776),
+            (1064344680277270561,1064344680277270561,200058115285323776),
+            (1064344680277270562,1064344680277270562,200058115285323776),
+            (1064344680277270563,1064344680277270563,200058115285323776),
+            (1064344680277270564,1064344680277270564,200058115285323776),
+            (1064344680277270565,1064344680277270565,200058115285323776),
+            (1064344680277270566,1064344680277270566,200058115285323776),
+            (1064344680277270567,1064344680277270567,200058115285323776),
+            (1064344680277270568,1064344680277270568,200058115285323776),
+            (1064344680277270569,1064344680277270569,200058115285323776),
+            (1064344680277270570,1064344680277270570,200058115285323776),
+            (1064344680277270571,1064344680277270571,200058115285323776),
+            (1064344680277270572,1064344680277270572,200058115285323776),
+            (1064344680277270573,1064344680277270573,200058115285323776);
+
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="init-data-table-res-inside-pc_and_app" author="lxh"  runOnChange="true">
+        <comment>
+            初期化企业端和APP端菜单按钮
+        </comment>
+        <sql>
+            <![CDATA[
+        delete from `sys_res` where id ='1064715726792691713';
+        delete from `sys_res` where id ='1064716521604911106';
+        delete from `sys_res` where id ='1064716967643975681';
+        delete from `sys_res` where id ='1064718521398726657';
+        delete from `sys_res` where id ='1064719225609785345';
+        delete from `sys_res` where id ='1064720421842063361';
+        delete from `sys_res` where id ='1064720666114134018';
+        delete from `sys_res` where id ='1064725501584609282';
+        delete from `sys_res` where id ='1064729337502109697';
+        delete from `sys_res` where id ='1064757142025670658';
+        delete from `sys_res` where id ='1064757686291140610';
+        delete from `sys_res` where id ='1064757916612956162';
+        delete from `sys_res` where id ='1064761027356266498';
+        delete from `sys_res` where id ='1064761274593710082';
+        delete from `sys_res` where id ='1064761566194307073';
+        delete from `sys_res` where id ='1064762122073804802';
+        delete from `sys_res` where id ='1064762934502100993';
+        delete from `sys_res` where id ='1064764229002727425';
+        delete from `sys_res` where id ='1064764489196376065';
+        delete from `sys_res` where id ='1064764940788699137';
+        delete from `sys_res` where id ='1064765294829899777';
+        delete from `sys_res` where id ='1064765647738638338';
+        delete from `sys_res` where id ='1064765909148635137';
+        delete from `sys_res` where id ='1064766234530156546';
+        delete from `sys_res` where id ='1064766450113187842';
+        delete from `sys_res` where id ='1064766738106683394';
+        delete from `sys_res` where id ='1064766961344319490';
+        delete from `sys_res` where id ='1064767194497290241';
+        delete from `sys_res` where id ='1064771302868389889';
+        delete from `sys_res` where id ='1064771891664785409';
+        delete from `sys_res` where id ='1064772756916146177';
+        delete from `sys_res` where id ='1064773003692216322';
+        delete from `sys_res` where id ='1064773334979317761';
+        delete from `sys_res` where id ='1064773938061512706';
+        delete from `sys_res` where id ='1064774278244732930';
+        delete from `sys_res` where id ='1064774697670938625';
+        delete from `sys_res` where id ='1064775769323999233';
+        delete from `sys_res` where id ='1064777819361382401';
+        delete from `sys_res` where id ='1064782663388237826';
+        delete from `sys_res` where id ='1064782883559837697';
+        delete from `sys_res` where id ='1064783097247043585';
+        delete from `sys_res` where id ='1064783378156359681';
+        delete from `sys_res` where id ='1064783530015330306';
+        delete from `sys_res` where id ='1066174360588443649';
+
+
+INSERT INTO `sys_res` (`id`, `pid`, `name`, `permission`, `url`, `sort_num`, `attach`, `icon1`, `icon2`, `pids`, `type`, `des`, `status`, `create_time`, `update_time`, `code`) VALUES
+	(1064715726792691713, 0, '首页', 'menu_p_1_0', 'system-shouyes', 0, 2, 'ali icon-shouye', '', '', 1, '首页', 1, '2018-11-20 11:03:05', '2018-11-20 15:34:06', NULL),
+	(1064716521604911106, 1064715726792691713, '首页', 'menu_p_2_100', 'system-shouye', 1, 2, 'fa fa-info', '', '', 1, '系统首页', 1, '2018-11-20 11:06:15', '2018-11-20 15:34:33', NULL),
+	(1064716967643975681, 0, '组织机构', 'menu_p_1_1', 'organization_informations', 2, 2, 'ali icon-zuzhijigou', '', '', 1, '政府机构', 1, '2018-11-20 11:08:01', '2018-11-20 15:35:01', NULL),
+	(1064718521398726657, 1064716967643975681, '机构信息', 'menu_p_2_101', 'organization_information', 1, 2, 'ali icon-jigouxinxi', '', '', 1, '机构信息', 1, '2018-11-20 11:14:12', '2018-11-20 15:35:18', NULL),
+	(1064719225609785345, 1064716967643975681, '人员信息', 'menu_p_2_102', 'people_information', 2, 2, 'ali icon-renyuanxinxi', '', '', 1, '人员信息', 1, '2018-11-20 11:17:00', '2018-11-20 15:35:26', NULL),
+	(1064720421842063361, 1064716967643975681, '职务信息', 'menu_p_2_103', 'job_information', 3, 2, 'ali icon-zhiwuxinxi', '', '', 1, '职务信息', 1, '2018-11-20 11:21:45', '2018-11-20 15:35:34', NULL),
+	(1064720666114134018, 1064716967643975681, '人员审批', 'menu_p_2_104', 'people_approval', 4, 2, 'ali icon-renyuanshenpi', '', '', 1, '人员审批', 1, '2018-11-20 11:22:43', '2018-11-20 15:35:41', NULL),
+	(1064725501584609282, 1064716967643975681, '审批记录', 'menu_p_2_105', 'approval_record', 5, 2, 'ali icon-shenpijilu', '', '', 1, '审批记录', 1, '2018-11-20 11:41:56', '2018-11-20 15:35:49', NULL),
+	(1064729337502109697, 1064716967643975681, '公章管理', 'menu_p_2_106', 'seal_manage', 6, 2, 'ali icon-gongzhangguanli', '', '', 1, '公章管理', 1, '2018-11-20 11:57:10', '2018-11-20 15:35:52', NULL),
+	(1064757142025670658, 0, '辖区单位', 'menu_p_1_2', 'unit-infos', 3, 2, 'ali icon-xiaqudanwei', '', '', 1, '辖区单位', 1, '2018-11-20 13:47:40', '2018-11-20 15:36:13', NULL),
+	(1064757686291140610, 1064757142025670658, '单位信息', 'menu_p_2_107', 'unit-info', 1, 2, 'ali icon-danweixinxi', '', '', 1, '单位信息', 1, '2018-11-20 13:49:49', '2018-11-20 15:36:20', NULL),
+	(1064757916612956162, 1064757142025670658, '单位人员', 'menu_p_2_108', 'unit-person', 2, 2, 'ali icon-danweirenyuan', '', '', 1, '单位人员', 1, '2018-11-20 13:50:44', '2018-11-20 15:36:32', NULL),
+	(1064761027356266498, 1064757142025670658, '单位类型', 'menu_p_2_109', 'unit-type', 3, 2, 'ali icon-danweifenlei', '', '', 1, '单位类型', 1, '2018-11-20 14:03:06', '2018-11-20 15:36:58', NULL),
+	(1064761274593710082, 1064757142025670658, '单位审批', 'menu_p_2_110', 'unit-approve', 4, 2, 'ali icon-danweishenpi', '', '', 1, '单位审批', 1, '2018-11-20 14:04:05', '2018-11-20 15:37:16', NULL),
+	(1064761566194307073, 1064757142025670658, '审批记录', 'menu_p_2_111', 'unit-record', 5, 2, 'ali icon-shenpijilu', '', '', 1, '单位记录', 1, '2018-11-20 14:05:14', '2018-11-20 15:37:26', NULL),
+	(1064762122073804802, 0, '风险台账', 'menu_p_1_3', 'risk-accounts', 4, 2, 'ali icon-fengxiantaizhang', '', '', 1, '风险台账', 1, '2018-11-20 14:07:27', '2018-11-20 15:37:47', NULL),
+	(1064762934502100993, 1064762122073804802, '风险台账', 'menu_p_2_112', 'risk-account', 1, 2, 'ali icon-fengxiantaizhang', '', '', 1, '风险台账', 1, '2018-11-20 14:10:41', '2018-11-20 15:37:56', NULL),
+	(1064764229002727425, 0, '安全检查', 'menu_p_1_4', 'inspection-tasks', 5, 2, 'fa fa-check-square-o', '', '', 1, '安全检查', 1, '2018-11-20 14:15:49', '2018-11-20 15:38:05', NULL),
+	(1064764489196376065, 1064764229002727425, '检查任务', ' menu_p_2_113', 'inspection-task', 1, 2, 'ali icon-jiancharenwu', '', '', 1, '检查任务', 1, '2018-11-20 14:16:51', '2018-11-20 15:38:12', NULL),
+	(1064764940788699137, 1064764229002727425, '记录查询', 'menu_p_2_114', 'check-records', 2, 2, 'ali icon-jiluchaxun', '', '', 1, '记录查询', 1, '2018-11-20 14:18:39', '2018-11-20 15:38:23', NULL),
+	(1064765294829899777, 1064764940788699137, '检查记录', ' menu_p_3_200', 'check-record', 1, 2, 'ali icon-jianchajilu', '', '', 1, '检查记录', 1, '2018-11-20 14:20:03', '2018-11-20 15:38:41', NULL),
+	(1064765647738638338, 1064764940788699137, '自检记录', 'menu_p_3_201', 'selfcheck-record', 2, 2, 'ali icon-zijianjilu', '', '', 1, '自检记录', 1, '2018-11-20 14:21:27', '2018-11-20 15:38:53', NULL),
+	(1064765909148635137, 0, '统计分析', ' menu_p_1_5', 'unit_statisticss', 6, 2, 'ali icon-tongjifenxi', '', '', 1, '统计分析', 1, '2018-11-20 14:22:30', '2018-11-20 15:39:04', NULL),
+	(1064766234530156546, 1064765909148635137, '单位信息统计', 'menu_p_2_115', 'unit_statistics', 1, 2, 'ali icon-danweixinxitongji', '', '', 1, '单位信息统计', 1, '2018-11-20 14:23:47', '2018-11-20 15:39:12', NULL),
+	(1064766450113187842, 1064765909148635137, '安全信息统计', 'menu_p_2_116', 'safe_statistics', 2, 2, 'ali icon-anquanxinxitongji', '', '', 1, '安全信息统计', 1, '2018-11-20 14:24:39', '2018-11-20 15:39:21', NULL),
+	(1064766738106683394, 1064765909148635137, '自检信息统计', 'menu_p_2_117', 'own_inspect_statistics', 3, 2, 'ali icon-zijianxinxitongji', '', '', 1, '自检信息统计', 1, '2018-11-20 14:25:47', '2018-11-20 15:39:23', NULL),
+	(1064766961344319490, 0, '任务管理', 'menu_p_1_6', 'task-manages', 7, 2, 'ali icon-renwuguanli', '', '', 1, '任务管理', 1, '2018-11-20 14:26:41', '2018-11-20 15:39:43', NULL),
+	(1064767194497290241, 1064766961344319490, '任务管理', 'menu_p_2_118', 'task-manage', 1, 2, 'ali icon-renwuguanli', '', '', 1, '任务管理', 1, '2018-11-20 14:27:36', '2018-11-20 15:39:51', NULL),
+	(1064771302868389889, 0, '绩效管理', 'menu_p_1_7', '', 8, 2, 'ali icon-jixiaoguanli', '', '', 1, '绩效管理', 1, '2018-11-20 14:43:56', '2018-11-20 15:40:11', NULL),
+	(1064771891664785409, 1064771302868389889, '绩效排名', 'menu_p_2_119', 'performance_ranking', 1, 2, 'ali icon-jixiaopaiming', '', '', 1, '绩效排名', 1, '2018-11-20 14:46:16', '2018-11-20 15:40:23', NULL),
+	(1064772756916146177, 0, '报表管理', 'menu_p_1_8', 'report_exports', 9, 2, 'ali icon-baobiaoguanli', '', '', 1, '报表管理', 1, '2018-11-20 14:49:42', '2018-11-20 15:40:32', NULL),
+	(1064773003692216322, 1064772756916146177, '报表导出', 'menu_p_2_120', 'report_export', 1, 2, 'ali icon-baobiaodaochu', '', '', 1, '报表导出', 1, '2018-11-20 14:50:41', '2018-11-20 15:40:37', NULL),
+	(1064773334979317761, 0, '通知公告', 'menu_p_1_9', 'notice-bulletins', 10, 2, 'ali icon-tonggaoguanli', '', '', 1, '通告管理', 1, '2018-11-20 14:52:00', '2018-11-20 15:40:55', NULL),
+	(1064773938061512706, 1064773334979317761, '通知公告', 'menu_p_2_121', 'notice-bulletin', 1, 2, 'ali icon-tonggaoguanli', '', '', 1, '通知公告', 1, '2018-11-20 14:54:24', '2018-11-20 15:40:57', NULL),
+	(1064774278244732930, 0, '知识库', 'menu_p_1_10', 'quarters_dutys', 11, 2, 'ali icon-zhishiku', '', '', 1, '知识库', 1, '2018-11-20 14:55:45', '2018-11-20 15:43:16', NULL),
+	(1064774697670938625, 1064774278244732930, '制度管理', 'menu_p_2_123', 'system_manage', 2, 2, 'ali icon-zhiduguanli', '', '', 1, '制度管理', 1, '2018-11-20 14:57:25', '2018-11-20 15:43:46', NULL),
+	(1064775769323999233, 1064774278244732930, '岗位职责', 'menu_p_2_122', 'quarters_duty', 1, 2, 'ali icon-gangweizhize', '', '', 1, '岗位职责', 1, '2018-11-20 15:01:41', '2018-11-20 15:43:43', NULL),
+	(1064777819361382401, 0, '系统管理', 'menu_p_1_11', 'role-manages', 12, 2, 'ali icon-xitongguanli', '', '', 1, '系统管理', 1, '2018-11-20 15:09:49', '2018-11-20 15:44:01', NULL),
+	(1064782663388237826, 1064777819361382401, '用户管理', 'menu_p_2_124', '', 1, 2, 'ali icon-yonghuguanli', '', '', 1, '用户管理', 1, '2018-11-20 15:29:04', '2018-11-20 15:29:04', NULL),
+	(1064782883559837697, 1064777819361382401, '角色管理', 'menu_p_2_125', 'role-manage', 2, 2, 'ali icon-jiaoseguanli', '', '', 1, '角色管理 ', 1, '2018-11-20 15:29:57', '2018-11-20 15:29:57', NULL),
+	(1064783097247043585, 1064777819361382401, '菜单管理', 'menu_p_2_126', '', 3, 2, 'ali icon-caidanguanli', '', '', 1, '菜单管理', 1, '2018-11-20 15:30:48', '2018-11-20 15:30:48', NULL),
+	(1064783378156359681, 0, '街道领导', 'menu_m_1_1', '', 2, 3, '', '', '', 1, '街道领导', 1, '2018-11-20 15:31:55', '2018-11-20 15:31:55', NULL),
+	(1064783530015330306, 0, '街道安全员', 'menu_m_1_2', '', 3, 3, '', '', '', 1, '街道安全员', 1, '2018-11-20 15:32:31', '2018-11-20 15:32:31', NULL),
+            (1066174360588443649, 0, '辖区单位', 'menu_m_1_3', '', 1, 3, '', '', '', 1, '辖区单位', 1, '2018-11-20 15:32:31', '2018-11-20 15:32:31', NULL);
+            ]]>
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="init-data-table-task-_rel-data" author="lxh"  runOnChange="true">
+        <comment>
+            初始化任务数据
+        </comment>
+        <sql>
+            <![CDATA[
+            delete from `task_rel` where id ='1066145645250400257';
+            delete from `task_rel` where id ='1066145645250400258';
+            delete from `task_rel` where id ='1066145645250400259';
+            delete from `task_rel` where id ='1066145645250400260';
+            delete from `task_rel` where id ='1066145645250400261';
+            delete from `task_rel` where id ='1066145645250400262';
+            delete from `task_rel` where id ='1066145645250400263';
+            delete from `task_rel` where id ='1066145645250400264';
+            delete from `task_rel` where id ='1066145645250400265';
+            delete from `task_rel` where id ='1066145645250400266';
+            delete from `task_rel` where id ='1066145645250400267';
+
+    INSERT INTO `task_rel` VALUES (1066145645250400257, 'mab_task_1', '注册成功', 100, '注册成功注册人获得100积分', 1, '2018-11-27 16:51:51', '2018-11-27 18:30:32',1);
+    INSERT INTO `task_rel` VALUES (1066145645250400258, 'mab_task_2', '绑定成功', 50, '绑定成功绑定人获得50积分', 1, '2018-11-27 18:30:56', '2018-11-27 18:31:19',1);
+    INSERT INTO `task_rel` VALUES (1066145645250400259, 'mab_task_3', '每日签到', 2, '每日签到获取2积分', 1, '2018-11-27 18:31:32', '2018-11-27 18:34:08',1);
+    INSERT INTO `task_rel` VALUES (1066145645250400260, 'mab_task_4', '连续十日签到', 10, '连续十日签到额外获取10积分', 1, '2018-11-27 18:32:00', '2018-11-27 18:34:25',1);
+    INSERT INTO `task_rel` VALUES (1066145645250400261, 'mab_task_5', '完善单位信息', 50, '单位信息完善操作人获得50积分', 1, '2018-11-27 18:32:11', '2018-11-27 18:34:40',3);
+    INSERT INTO `task_rel` VALUES (1066145645250400262, 'mab_task_6', '单位自检', 5, '单位自检一次，自检人获得5分', 1, '2018-11-27 18:32:17', '2018-11-27 18:34:56',3);
+    INSERT INTO `task_rel` VALUES (1066145645250400263, 'mab_task_7', '街道专检', 5, '街道专检，一次5分，若两人共同检查，则二人均可获得5分', 1, '2018-11-27 18:32:22', '2018-11-27 18:35:15',2);
+    INSERT INTO `task_rel` VALUES (1066145645250400264, 'mab_task_8', '逾期重启', 5, '街道逾期重启，操作人得5分', 1, '2018-11-27 18:32:40', '2018-11-27 18:35:55',2);
+    INSERT INTO `task_rel` VALUES (1066145645250400265, 'mab_task_9', '逾期关闭', 2, '街道逾期关闭，操作人得2分', 1, '2018-11-27 18:32:51', '2018-11-27 18:35:56',2);
+    INSERT INTO `task_rel` VALUES (1066145645250400266, 'mab_task_10', '整改完成', 5, '辖区单位整改完成，整改人每条隐患5积分', 1, '2018-11-27 18:32:56', '2018-11-27 18:36:02',3);
+    INSERT INTO `task_rel` VALUES (1066145645250400267, 'mab_task_11', '整改复核', 5, '整改复核，操作人得5分', 1, '2018-11-27 18:33:15', '2018-11-27 18:36:08',2);
+
+        ]]>
+        </sql>
+    </changeSet>
+
+
+</databaseChangeLog>

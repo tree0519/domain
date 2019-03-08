@@ -1,0 +1,135 @@
+server:
+  port: 9093
+
+spring:
+  application:
+    name: nsop-oauthserver
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://172.21.0.2:3306/db_nsop_dev?useUnicode=true&characterEncoding=UTF-8&useSSL=true
+      username: root
+      password: Mydao1905
+      initial-size: 1
+      max-active: 50
+      max-wait: 60000
+      min-idle: 5
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      max-open-prepared-statements: 20
+      remove-abandoned: true
+      remove-abandoned-timeout: 1800
+      log-abandoned: true
+  redis:
+    database: 2
+    host: 154.8.143.230
+    port: 6379
+    password: Mydao1906
+  cache:
+    type: redis
+  rabbitmq:
+    host: 154.8.143.230
+    port: 5672
+    username: lisi
+    password: 123456
+    virtual-host: /nsop
+    listener:
+      simple:
+        # 采用手动应答
+        acknowledge-mode: manual
+        # 当前监听容器数
+        concurrency: 1
+        # 最大数
+        max-concurrency: 1
+        # 是否支持重试
+        retry:
+          enabled: true
+    # 支持发布确认
+    publisher-confirms: true
+    # 支持发布返回
+    publisher-returns: true
+
+management:
+  security:
+    enabled: false
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://172.18.0.2:3000/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${server.port}
+
+security:
+  basic:
+    enabled: false
+  oauth2:
+    resource:
+      filter-order: 3
+      id: nsop-oauthserver-resource
+
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 30000
+        readTimeout: 30000
+ribbon:
+  eager-load:
+    enabled: true
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 2
+  OkToRetryOnAllOperations: false
+  ConnectTimeout: 30000
+  ReadTimeout: 30000
+hystrix:
+  propagate:
+    request-attribute:
+      enabled: true
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.mydao.nsop.domain
+  #typeEnumsPackage: com.baomidou.springboot.entity.enums
+  global-config:
+    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    id-type: 1
+    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    field-strategy: 2
+    #驼峰下划线转换
+    db-column-underline: true
+    #刷新mapper 调试神器
+    refresh-mapper: true
+    #数据库大写下划线转换
+    #capital-mode: true
+    #序列接口实现类配置
+    #key-generator: com.baomidou.springboot.xxx
+    #逻辑删除配置
+    logic-delete-value: 0
+    logic-not-delete-value: 1
+    #自定义填充策略接口实现
+    #meta-object-handler: com.baomidou.springboot.xxx
+    #自定义SQL注入器
+    #sql-injector: com.baomidou.springboot.xxx
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+rabbitmq:
+  delayed-exchange-name: delay-exchange-unbind-dev2
+  delayed-queue-name: vehicle-unbind-delayed-queue-dev2

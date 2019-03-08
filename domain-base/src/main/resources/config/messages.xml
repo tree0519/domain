@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <!-- 用户模块数据记录日志的操作数据和操作导航数据 -->
+            <!--添加用户信息-->
+            <entry key="user.add">新增用户名称：[{0}]</entry>
+            <entry key="user.add.message">新增用户用户名:[{1}]</entry>
+            <entry key="user.add.type">[{2}]</entry>
+            <!--更新用户信息-->
+            <entry key="user.update">更新用户ID:[{0}]</entry>
+            <entry key="user.update.message">更新用户姓名:[{1}]</entry>
+            <entry key="user.update.type">[{2}]</entry>
+
+    <!--字典功能日志导航数据-->
+            <!--添加字典信息-->
+            <entry key="dict.add">新增字典信息名称：[{0}]</entry> <!--对应 日志数据-->
+            <entry key="dict.add.message">新增字典类型ID:[{1}]</entry><!--对应 操作详情-->
+            <entry key="dict.add.type">[{2}]</entry><!--对应 操作类型-->
+            <!--更新字典信息-->
+            <entry key="dict.update">新增字典ID:[{0}]</entry>
+            <entry key="dict.update.message">新增字典code:[{1}]</entry>
+            <entry key="dict.update.type">[{2}]</entry>
+            <!--启用禁用字典信息-->
+            <entry key="dict.startOrStop">启用或禁用字典ID:[{0}]</entry>
+            <entry key="dict.startOrStop.message">启用(1)/禁用(2)</entry>
+            <entry key="dict.startOrStop.type">[{1}]</entry>
+
+
+    <!--应用功能日志导航数据-->
+            <!--添加应用信息-->
+            <entry key="app.add">新增应用信息名称：[{0}]</entry> <!--对应 日志数据-->
+            <entry key="app.add.message">新增产品应用,应用描述:[{1}]</entry><!--对应 操作详情-->
+            <entry key="app.add.type">[{2}]</entry><!--对应 操作类型-->
+            <!--更新应用信息-->
+            <entry key="apply.update">更新应用名称:[{0}]</entry>
+            <entry key="apply.update.message">更新应用ID:[{1}]</entry>
+            <entry key="apply.update.type">[{2}]</entry>
+            <!--删除应用信息-->
+            <entry key="apply.delete">应用ID:[{0}]</entry>
+            <entry key="apply.delete.message">删除应用(包含应用下的菜单)</entry>
+            <entry key="apply.delete.type">[{1}]</entry>
+        <!--人员功能日志导航数据-->
+            <!--人员信息新增-->
+            <entry key="per.add">新增人员信息名称：[{0}]</entry> <!--对应 人员信息-->
+            <entry key="per.add.message">新增人员ID:[{1}]</entry><!--对应 操作详情-->
+            <entry key="per.add.type">[{2}]</entry><!--对应 操作类型-->
+            <!--人员信息删除-->
+            <entry key="per.delete">删除人员信息ID：[{0}]</entry> <!--对应 人员信息-->
+            <entry key="per.delete.type">[{1}]</entry><!--对应 操作类型-->
+        <!--菜单功能日志导航数据-->
+            <!--更新菜单信息-->
+            <entry key="menu.add">新增菜单信息名称：[{0}]</entry> <!--对应 日志数据-->
+            <entry key="menu.add.message">新增菜单,菜单编码:[{1}]</entry><!--对应 操作详情-->
+            <entry key="menu.add.type">[{2}]</entry><!--对应 操作类型-->
+
+            <entry key="menu.update">更新菜单名称：[{0}]</entry> <!--对应 日志数据-->
+            <entry key="menu.update.message">更新菜单，菜单ID:[{1}]</entry><!--对应 操作详情-->
+            <entry key="menu.update.type">[{2}]</entry><!--对应 操作类型-->
+
+            <!--删除菜单信息-->
+            <entry key="menu.delete">删除菜单id：[{0}]</entry> <!--对应 日志数据-->
+            <entry key="menu.delete.message">删除菜单</entry><!--对应 操作详情-->
+            <entry key="menu.delete.type">[{1}]</entry><!--对应 操作类型-->
+
+        <!--客户功能日志导航数据-->
+            <!--客户管理添加信息-->
+            <entry key="client.add">新增客户信息名称：[{0}]</entry> <!--对应 日志数据-->
+            <entry key="client.add.message">创建客户</entry><!--对应 操作详情-->
+            <entry key="client.add.type">[{1}]</entry><!--对应 操作类型-->
+
+            <!--创建客户管理员添加信息-->
+            <entry key="client.admin">新增客户管理员登录名称：[{0}]</entry> <!--对应 日志数据-->
+            <entry key="client.admin.message">创建客户管理员,客户ID:[{1}]</entry><!--对应 操作详情-->
+            <entry key="client.admin.type">[{2}]</entry><!--对应 操作类型-->
+
+
+           <!--更新客户信息-->
+           <entry key="client.update">更新客户，客户ID：[{0}]</entry> <!--对应 日志数据-->
+           <entry key="client.update.message">更新客户</entry><!--对应 操作详情-->
+           <entry key="client.update.type">[{1}]</entry><!--对应 操作类型-->
+           <!--重置密码信息-->
+            <entry key="client.restPwd">重置密码，客户ID：[{0}]</entry> <!--对应 日志数据-->
+            <entry key="client.restPwd.message">重置密码</entry><!--对应 操作详情-->
+            <entry key="client.restPwd.type">[{1}]</entry><!--对应 操作类型-->
+
+            <!--&lt;!&ndash;授权客户信息&ndash;&gt;-->
+            <!--<entry key="client.authorize">授权客户ID:[{0}]</entry> &lt;!&ndash;对应 日志数据&ndash;&gt;-->
+            <!--<entry key="client.authorize.message">授权客户,使用类型:[{1}]</entry>&lt;!&ndash;对应 操作详情&ndash;&gt;-->
+            <!--<entry key="client.authorize.type">[{2}]</entry>&lt;!&ndash;对应 操作类型&ndash;&gt;-->
+
+        <!--部门功能日志导航数据-->
+            <!--添加部门信息-->
+            <entry key="dept.add">添加部门信息名称：[{0}]</entry> <!--对应 日志数据-->
+            <entry key="dept.add.message">添加部门,部门类型(1-公司,2-部门):[{1}]</entry><!--对应 操作详情-->
+            <entry key="dept.add.type">[{2}]</entry><!--对应 操作类型-->
+
+            <!--更新部门信息-->
+            <entry key="dept.update">更新部门信息名称：[{0}]</entry> <!--对应 日志数据-->
+            <entry key="dept.update.message">更新部门,部门类型(1-公司,2-部门):[{1}]</entry><!--对应 操作详情-->
+            <entry key="dept.update.type">[{2}]</entry><!--对应 操作类型-->
+
+        <!--角色功能日志导航数据-->
+            <!--添加角色信息-->
+            <entry key="role.add">添加角色名称:[{0}]</entry> <!--对应 日志数据-->
+            <entry key="role.add.message">添加角色</entry><!--对应 操作详情-->
+            <entry key="role.add.type">[{1}]</entry><!--对应 操作类型-->
+            <!--更新角色信息-->
+            <entry key="role.update">更新角色名称:[{0}]</entry> <!--对应 日志数据-->
+            <entry key="role.update.message">更新角色</entry><!--对应 操作详情-->
+            <entry key="role.update.type">[{1}]</entry><!--对应 操作类型-->
+            <!--删除角色信息-->
+            <entry key="role.delete">删除角色ID：[{0}]</entry> <!--对应 日志数据-->
+            <entry key="role.delete.message">删除角色</entry><!--对应 操作详情-->
+            <entry key="role.delete.type">[{1}]</entry><!--对应 操作类型-->
+        <!-- 积分-->
+            <entry key="credits.deduct">兑换的积分数：[{0}]</entry> <!--对应 日志数据-->
+            <entry key="credits.deduct.message">兑换的物品：[{1}]</entry><!--对应 操作详情-->
+            <entry key="credits.deduct.type">[{2}]</entry><!--对应 操作类型-->
+
+</properties>
