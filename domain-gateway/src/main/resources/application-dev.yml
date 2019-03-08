@@ -6,7 +6,7 @@ spring:
     name: domain-gateway
   redis:
     database: 7
-    host: 54.169.160.139
+    host: 54.169.202.234
     port: 6379
     password:
   cache:
@@ -14,7 +14,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://54.169.160.139:3000/eureka
+      defaultZone: http://54.169.202.234:3000/eureka
   instance:
     prefer-ip-address: true
 
